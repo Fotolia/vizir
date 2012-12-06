@@ -1,0 +1,2 @@
+class CollectdMetric < Metric
+end
