@@ -1,4 +1,8 @@
+require 'sti_helpers'
+
 class Provider < ActiveRecord::Base
+  extend StiHelpers
+
   attr_accessible :name, :type, :details
 
   serialize :details, JSON
@@ -13,7 +17,7 @@ class Provider < ActiveRecord::Base
     raise "Method not implemented"
   end
 
-  def get_data(options = {})
+  def get_values(options = {})
     raise "Method not implemented"
   end
 

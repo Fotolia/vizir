@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20121206142433) do
 
   create_table "metrics", :force => true do |t|
     t.string   "name"
+    t.string   "title"
     t.string   "type"
     t.string   "unit"
     t.text     "details"

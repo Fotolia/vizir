@@ -1,48 +1,41 @@
 require 'rrd'
 
 class CollectdProvider < Provider
+  attr_custom :rrd_path, :collectd_sock, :rrdcached_sock
 
   def get_entities
-    Dir.glob("#{details["rrd_path"]}/*").map {|e| e.split('/').last }.sort.uniq
+    Dir.glob("#{rrd_path}/*").map {|e| e.split('/').last }.sort.uniq
   end
 
   def get_metrics
     list = []
     file_list.each do |filename|
-      metric = filename[/#{details["rrd_path"]}\/.*?\/(.*)\.rrd/, 1].split("/")
-      rrd = RRD::Base.new(filename)
-      dss = rrd.info.keys.select {|v| v =~ /^ds/ }.map {|v| v[/^ds\[(\S+)\]\..*$/, 1] }.uniq
+      rrd = filename[/#{rrd_path}\/.*?\/(.*)/, 1]
+      dss = get_ds_list(filename)
       dss.each do |ds|
         # TODO Match with definitions list
-        list << metric.dup.push(ds).join(":")
+        list << { "rrd" => rrd, "ds" => ds }
       end
     end
     list
   end
 
-  def get_data(options = {})
-    entity = options["entity"]
-    rrd_file = options["rrd"]
-    ds = options["ds"]
-    start  = options["start"]  || Time.now.to_i - 3600
-    finish = options["end"] || Time.now.to_i
+  def get_values(options = {})
+    rrd_rel_path = "#{options["entity"]}/#{options["rrd"]}"
+    rrd_abs_path = "#{rrd_path}/#{rrd_rel_path}"
+    start  = options["start"]
+    finish = options["end"]
 
-    flush("#{entity}/#{rrd_file}", @collectdsock) if @collectdsock
-    flush("#{details["rrd_path"]}/#{entity}/#{rrd_file}", @rrdcachedsock) if @rrdcachedsock
+    flush(rrd_rel_path, collectd_sock) if collectd_sock
+    flush(rrd_abs_path, rrdcached_sock) if rrdcached_sock
 
-    rrd = RRD::Base.new("#{details["rrd_path"]}/#{entity}/#{rrd_file}")
-
+    rrd = RRD::Base.new(rrd_abs_path)
     rrd_data = rrd.fetch(:average, :start => start, :end => finish)
 
     # first entry describes format
-    struct = rrd_data.shift
-    ds_index = struct.index(ds)
+    ds_index = rrd_data.shift.index(options["ds"])
 
-    data = {
-      "start"  => start,
-      "end"    => finish,
-      "values" => []
-    }
+    data = []
 
     last_valid = 0
     rrd_data.each do |tuple|
@@ -52,10 +45,17 @@ class CollectdProvider < Provider
       else
         last_valid = value
       end
-      data["values"] << { "x" => tuple[0], "y" => value }
+      data << { "x" => tuple[0], "y" => value }
     end
 
-    p data
+    data
+  end
+
+  private
+
+  def get_ds_list(rrd_file)
+    rrd = RRD::Base.new(rrd_file)
+    rrd.info.keys.select {|v| v =~ /^ds/ }.map {|v| v[/^ds\[(\S+)\]\..*$/, 1] }.uniq
   end
 
   def flush(path, socket)
@@ -66,6 +66,6 @@ class CollectdProvider < Provider
   end
 
   def file_list
-    @cached_file_list ||= Dir.glob("#{details["rrd_path"]}/**/*.rrd")
+    @cached_file_list ||= Dir.glob("#{rrd_path}/**/*.rrd")
   end
 end

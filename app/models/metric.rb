@@ -1,5 +1,9 @@
+require 'sti_helpers'
+
 class Metric < ActiveRecord::Base
-  attr_accessible :name, :type, :unit, :details, :provider_id
+  extend StiHelpers
+
+  attr_accessible :name, :title, :type, :unit, :details, :provider_id
 
   serialize :details, JSON
 
@@ -13,6 +17,10 @@ class Metric < ActiveRecord::Base
     options["entity"] = entity
     options["start"] = start
     options["end"] = finish
-    provider.get_data(options)
+
+    data = {
+      "name" => name,
+      "data" => provider.get_values(options)
+    }
   end
 end
