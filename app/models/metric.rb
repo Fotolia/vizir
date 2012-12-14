@@ -7,6 +7,12 @@ class Metric < ActiveRecord::Base
 
   serialize :details, JSON
 
+  validates :name,
+    :uniqueness => true,
+    :presence => true
+  validates :type, :provider_id,
+    :presence => true
+
   has_many :entity_metrics
   has_many :entities, :through => :entity_metrics
 

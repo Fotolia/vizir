@@ -7,6 +7,12 @@ class Provider < ActiveRecord::Base
 
   serialize :details, JSON
 
+  validates :name,
+    :uniqueness => true,
+    :presence => true
+  validates :type,
+    :presence => true
+
   has_many :metrics
 
   def get_entities

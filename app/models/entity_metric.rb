@@ -4,6 +4,8 @@ class EntityMetric < ActiveRecord::Base
   belongs_to :entity
   belongs_to :metric
 
+  scope :w_assocs, includes(:metric, :entity)
+
   def fetch_values(start, finish)
     metric.fetch_values(start, finish, entity.name)
   end
