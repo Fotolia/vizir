@@ -1,2 +1,8 @@
+- content_for :sidebar do
+  - @ems.each do |e|
+    %li= link_to("#{e.entity.name}##{e.metric.name}", "/?em=#{e.id}", :remote => true)
+
 %h1 App#home
-%p Find me in app/views/app/home.html.haml
+
+#charts
+

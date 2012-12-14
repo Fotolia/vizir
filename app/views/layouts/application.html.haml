@@ -38,17 +38,12 @@
         .span3
           .well.sidebar-nav
             %ul.nav.nav-list
-              %li.nav-header Sidebar
-              %li= link_to "Link 1", "/path1"
-              %li= link_to "Link 2", "/path2"
-              %li= link_to "Link 3", "/path3"
+              %li.nav-header Metrics
+              = yield :sidebar
+
         .span9
           = yield
     
       %footer
-        %p &copy; Company 2012
-    /
-      Javascripts
-      \==================================================
-    / Placed at the end of the document so the pages load faster
+        %p &copy; Fotolia 2012
     = javascript_include_tag "application"
