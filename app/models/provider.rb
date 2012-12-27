@@ -13,11 +13,22 @@ class Provider < ActiveRecord::Base
 
   has_many :instances
 
-  def get_entities
-    raise "Method not implemented"
+  def load_entities
+    unless @entities.nil?
+      existing_entities = Entity.all.map {|e| e.name}
+      @entities.each do |e|
+        unless existing_entities.include?(e)
+          Entity.new(:name => e).save
+        end
+        existing_entities.delete(e)
+      end
+      unless existing_entities.empty?
+        existing_entities.each {|e| Entity.find_by_name(e).destroy}
+      end
+    end
   end
 
-  def get_metrics
+  def load_metrics
     raise "Method not implemented"
   end
 

@@ -3,13 +3,12 @@ require 'rrd'
 class CollectdProvider < Provider
   attr_custom :rrd_path, :collectd_sock, :rrdcached_sock
 
-  def get_entities
-    Dir.glob("#{rrd_path}/*/").map {|e| e.split('/').last }.uniq.each do |e|
-      Entity.new(:name => e).save
-    end
+  def load_entities
+    @entities = Dir.glob("#{rrd_path}/*/").map {|e| e.split('/').last }.uniq
+    super
   end
 
-  def get_metrics
+  def load_metrics
     metric_list = []
     instance_list = []
 
