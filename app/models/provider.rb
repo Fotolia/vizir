@@ -1,5 +1,3 @@
-require 'sti_helpers'
-
 class Provider < ActiveRecord::Base
   extend StiHelpers
 
@@ -13,7 +11,7 @@ class Provider < ActiveRecord::Base
   validates :type,
     :presence => true
 
-  has_many :metrics
+  has_many :instances
 
   def get_entities
     raise "Method not implemented"

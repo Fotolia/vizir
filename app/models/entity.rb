@@ -5,6 +5,6 @@ class Entity < ActiveRecord::Base
     :uniqueness => true,
     :presence => true
 
-  has_many :entity_metrics
-  has_many :metrics, :through => :entity_metrics
+  has_many :instances
+  has_many :metrics, :through => :instances
 end

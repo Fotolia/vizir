@@ -19,23 +19,21 @@ ActiveRecord::Schema.define(:version => 20121206142433) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "entity_metrics", :force => true do |t|
+  create_table "instances", :force => true do |t|
     t.integer  "entity_id"
     t.integer  "metric_id"
-    t.string   "instance"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "provider_id"
+    t.text     "details"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "metrics", :force => true do |t|
     t.string   "name"
-    t.string   "title"
     t.string   "type"
-    t.string   "unit"
     t.text     "details"
-    t.integer  "provider_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "providers", :force => true do |t|
