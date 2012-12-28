@@ -42,9 +42,9 @@ namespace :vizir do
   desc "Drop all entities and metrics"
   task :cleanup => :environment do
     sql = <<-SQL
-    TRUNCATE instances RESTART IDENTITY;
-    TRUNCATE metrics RESTART IDENTITY;
-    TRUNCATE entities RESTART IDENTITY;
+    DELETE FROM instances;
+    DELETE FROM metrics;
+    DELETE FROM entities;
     SQL
     ActiveRecord::Base.establish_connection
     ActiveRecord::Base.connection.execute(sql)

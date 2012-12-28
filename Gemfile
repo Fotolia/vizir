@@ -1,17 +1,18 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.9'
-gem 'pg'
 gem 'jquery-rails'
 gem 'haml', '>= 3.1.7'
 
 group :production do
   gem 'thin', '>= 1.5.0'
+  gem 'pg'
 end
 
 group :development do
   gem 'haml-rails', '>= 0.3.5'
   gem 'quiet_assets', '>= 1.0.1'
+  gem 'sqlite3'
 end
 
 group :assets do

@@ -31,8 +31,13 @@ class CollectdProvider < Provider
       end
     end
 
-    metric_list.each {|m| m.save}
-    instance_list.each {|i| i.save}
+    # TODO Clean THAT
+    metric_list.each do |m|
+      p m.errors unless m.save
+    end
+    instance_list.each do |i|
+      p i.errors unless i.save
+    end
 
     nil
   end

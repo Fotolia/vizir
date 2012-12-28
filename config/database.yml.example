@@ -1,0 +1,43 @@
+### Postgres example config
+#common: &common
+#  adapter: postgresql
+#  encoding: unicode
+#  pool: 5
+#  username: viz
+#  password: viz
+#  min_messages: warning
+#
+#  #host: localhost
+#  #port: 5432
+#  # Schema search path. The server defaults to $user,public
+#  #schema_search_path: myapp,sharedapp,public
+#
+#development:
+#  <<: *common
+#  database: vizir_development
+#
+#test:
+#  <<: *common
+#  database: vizir_test
+#
+#production:
+#  <<: *common
+#  database: vizir_production
+
+### Sqlite3 example config
+#common: &common
+#  adapter: sqlite3
+#  pool: 5
+#  timeout: 5000
+#
+#development:
+#  <<: *common
+#  database: db/development.sqlite3
+#
+#test:
+#  <<: *common
+#  database: db/test.sqlite3
+#
+#production:
+#  <<: *common
+#  database: db/production.sqlite3
