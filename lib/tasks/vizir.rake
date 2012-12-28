@@ -3,6 +3,7 @@ require 'yaml'
 namespace :vizir do
   providers_yml = "#{Rails.root}/config/providers.yml"
 
+  desc "Initialize application by creating metric providers"
   task :init => :environment do
     unless File.exists?(providers_yml)
       puts "Provider config file #{providers_yml} not found. Create it according to doc."
@@ -26,6 +27,7 @@ namespace :vizir do
     end
   end
 
+  desc "Load provided entities and metrics in database"
   task :load => :environment do
     if Provider.count == 0
       puts "No provider found. Create #{providers_yml} and run 'rake vizir:init'."
@@ -35,5 +37,16 @@ namespace :vizir do
       provider.load_entities
       provider.load_metrics
     end
+  end
+
+  desc "Drop all entities and metrics"
+  task :cleanup => :environment do
+    sql = <<-SQL
+    TRUNCATE instances RESTART IDENTITY;
+    TRUNCATE metrics RESTART IDENTITY;
+    TRUNCATE entities RESTART IDENTITY;
+    SQL
+    ActiveRecord::Base.establish_connection
+    ActiveRecord::Base.connection.execute(sql)
   end
 end
