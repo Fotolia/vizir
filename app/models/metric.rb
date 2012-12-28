@@ -2,7 +2,8 @@ class Metric < ActiveRecord::Base
   extend StiHelpers
 
   attr_accessible :name, :type, :details
-  attr_accessor :title, :unit, :instance_details
+  attr_custom :title, :unit
+  attr_accessor :instance_details
 
   serialize :details, JSON
 
@@ -20,6 +21,10 @@ class Metric < ActiveRecord::Base
   has_many :instances
   has_many :entities, :through => :instances
 
+  after_initialize do |metric|
+    metric.dsl_override
+  end
+
   def fetch_values(start, finish, entity, provider)
     options = details
     options["entity"] = entity.name
@@ -35,6 +40,8 @@ class Metric < ActiveRecord::Base
   def ==(metric)
     self.name == metric.name and self.details == metric.details
   end
+
+  private
 
   def dsl_override
     if metric_defs = Vizir::DSL[:metric][self.class.to_s]
@@ -64,13 +71,5 @@ class Metric < ActiveRecord::Base
       self.assign_attributes(metric_def.first, :without_protection => true) unless metric_def.empty?
       self.instance_details = matches unless matches.empty?
     end
-  end
-
-  after_initialize do |metric|
-    metric.dsl_override
-  end
-
-  after_find do |metric|
-    metric.dsl_override
   end
 end

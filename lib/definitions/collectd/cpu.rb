@@ -3,7 +3,7 @@ cpu_metrics.each do |type|
   metric "cpu_#{type}" do
     rrd %r{cpu-(?<cpu_id>\d+)/cpu-#{type}.rrd}
     ds "value"
-    title "CPU #{type.capitalize}"
+    title "CPU $cpu_id #{type.capitalize}"
   end
 end
 

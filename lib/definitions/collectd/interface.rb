@@ -3,7 +3,7 @@
     metric "if_#{type}_#{dir}" do
       rrd %r{interface/if_#{type}-(?<iface>\w+).rrd}
       ds dir
-      title "Interface #{dir} #{type}"
+      title "Interface $iface #{dir} #{type}"
     end
   end
 end
