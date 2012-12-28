@@ -25,18 +25,6 @@ class Metric < ActiveRecord::Base
     metric.dsl_override
   end
 
-  def fetch_values(start, finish, entity, provider)
-    options = details
-    options["entity"] = entity.name
-    options["start"] = start
-    options["end"] = finish
-
-    data = {
-      "name" => name,
-      "data" => provider.get_values(options)
-    }
-  end
-
   def ==(metric)
     self.name == metric.name and self.details == metric.details
   end

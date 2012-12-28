@@ -40,14 +40,12 @@ class CollectdProvider < Provider
   def get_values(options = {})
     rrd_rel_path = "#{options["entity"]}/#{options["rrd"]}"
     rrd_abs_path = "#{rrd_path}/#{rrd_rel_path}"
-    start  = options["start"]
-    finish = options["end"]
 
     flush(rrd_rel_path, collectd_sock) if collectd_sock
     flush(rrd_abs_path, rrdcached_sock) if rrdcached_sock
 
     rrd = RRD::Base.new(rrd_abs_path)
-    rrd_data = rrd.fetch(:average, :start => start, :end => finish)
+    rrd_data = rrd.fetch(:average, :start => options["start"], :end => options["end"])
 
     # first entry describes format
     ds_index = rrd_data.shift.index(options["ds"])
