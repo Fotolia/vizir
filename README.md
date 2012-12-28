@@ -16,6 +16,13 @@ Features
  * provides a DSL to describe metrics and graphs, to create custom dashboards,
    and to apply operations to data (sums, ratios, etc.)
 
+Setup
+-----
+
+  * Copy config/providers.yml.example to config/providers.yml and edit to match your environment
+  * rake vizir:init
+  * rake vizir:load
+
 Licencing
 ---------
 
