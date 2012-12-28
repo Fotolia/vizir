@@ -16,30 +16,12 @@ class CollectdProvider < Provider
       parts = filename.match(/#{rrd_path}\/(?<host>.*?)\/(?<rrd>.*)/)
       dss = get_ds_list(filename)
       dss.each do |ds|
-        metric = nil
-        metric_def = nil
-        rrd_match = nil
-
-        if metric_defs = Vizir::DSL[:metric]["CollectdMetric"]
-          metric_defs.each do |m|
-            if rrd_match = m[:rrd].match(parts[:rrd]) and m[:ds] == ds
-              metric_def = m
-              break
-            end
-          end
-          unless metric_def.nil?
-            metric = CollectdMetric.new(:name => metric_def[:name], :rrd => metric_def[:rrd], :ds => ds)
-          end
-        end
-
-        # Default, no DSL found
-        if metric.nil?
-          metric = CollectdMetric.new(:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds) if metric.nil?
-        end
+        metric = CollectdMetric.new(:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds) if metric.nil?
 
         instance_list << i = Instance.new
         i.assign_attributes({ :entity => Entity.find_by_name(parts[:host]), :provider => self }, :without_protection => true)
-        i.details = rrd_match.to_hash unless rrd_match.nil?
+        i.details = metric.instance_details unless metric.instance_details.nil?
+
         if metric_i = metric_list.index(metric)
           i.metric = metric_list[metric_i]
         else
