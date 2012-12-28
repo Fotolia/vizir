@@ -10,13 +10,13 @@ class AppController < ApplicationController
     #  enti = params[:e].to_i
     #end
 
-    @ems = EntityMetric.w_assocs
+    @is = Instance.w_assocs
 
     @metrics = []
 
-    if params[:em]
-      em = EntityMetric.w_assocs.find(params[:em])
-      @metrics << em.fetch_values(Time.now.to_i - 3600, Time.now.to_i)
+    if params[:i]
+      i = Instance.w_assocs.find(params[:i])
+      @metrics << i.fetch_values(Time.now.to_i - 3600, Time.now.to_i)
     end
 
     respond_to do |format|
