@@ -13,6 +13,8 @@ group :development do
   gem 'haml-rails', '>= 0.3.5'
   gem 'quiet_assets', '>= 1.0.1'
   gem 'sqlite3'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 group :assets do
