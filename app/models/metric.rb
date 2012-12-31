@@ -29,7 +29,7 @@ class Metric < ActiveRecord::Base
     self.name == metric.name
   end
 
-  private
+  protected
 
   def dsl_override
     if metric_defs = Vizir::DSL[:metric][self.class.to_s]
