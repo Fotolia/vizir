@@ -3,13 +3,8 @@ class Instance < ActiveRecord::Base
 
   serialize :details, JSON
 
-  validates :entity_id,
+  validates :entity_id, :provider_id, :metric_id,
     :presence => true
-  validates :provider_id,
-    :presence => true
-  validates :metric_id,
-#    :presence => true, # Fails when Metric is created just before Instance (metric.id in the cloud ?)
-    :uniqueness => {:scope => [:entity_id, :provider_id]}
 
   belongs_to :entity
   belongs_to :metric

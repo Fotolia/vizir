@@ -26,7 +26,7 @@ class Metric < ActiveRecord::Base
   end
 
   def ==(metric)
-    self.name == metric.name and self.details == metric.details
+    self.name == metric.name
   end
 
   private

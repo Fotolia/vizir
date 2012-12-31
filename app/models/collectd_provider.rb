@@ -10,33 +10,27 @@ class CollectdProvider < Provider
 
   def load_metrics
     metric_list = []
-    instance_list = []
 
     Dir.glob("#{rrd_path}/**/*.rrd").each do |filename|
       parts = filename.match(/#{rrd_path}\/(?<host>.*?)\/(?<rrd>.*)/)
       dss = get_ds_list(filename)
       dss.each do |ds|
-        metric = CollectdMetric.new(:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds) if metric.nil?
+        metric = CollectdMetric.new(:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds)
 
-        instance_list << i = Instance.new
-        i.assign_attributes({ :entity => Entity.find_by_name(parts[:host]), :provider => self }, :without_protection => true)
-        i.details = metric.instance_details unless metric.instance_details.nil?
+        instance = Instance.new
+        instance.assign_attributes({ :entity => Entity.find_by_name(parts[:host]), :provider => self }, :without_protection => true)
+        instance.details = metric.instance_details unless metric.instance_details.nil?
 
-        if metric_i = metric_list.index(metric)
-          i.metric = metric_list[metric_i]
+        if metric_index = metric_list.index(metric)
+          metric = metric_list[metric_index]
         else
           metric_list << metric
-          i.metric = metric
+          metric.save!
         end
-      end
-    end
 
-    # TODO Clean THAT
-    metric_list.each do |m|
-      p m.errors unless m.save
-    end
-    instance_list.each do |i|
-      p i.errors unless i.save
+        instance.metric = metric
+        instance.save!
+      end
     end
 
     nil
