@@ -11,6 +11,7 @@ class CollectdProvider < Provider
   def load_metrics
     metric_list = []
 
+    # TODO make this block more generic, for use with other providers
     Dir.glob("#{rrd_path}/**/*.rrd").each do |filename|
       parts = filename.match(/#{rrd_path}\/(?<host>.*?)\/(?<rrd>.*)/)
       dss = get_ds_list(filename)
