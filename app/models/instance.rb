@@ -12,8 +12,8 @@ class Instance < ActiveRecord::Base
 
   has_and_belongs_to_many :graphs
 
-  scope :incl_assocs, includes(:metric, :entity)
-  scope :join_assocs, joins(:metric, :entity)
+  scope :incl_assocs, includes(:metric, :entity, :provider)
+  scope :join_assocs, joins(:metric, :entity, :provider)
 
   def fetch_values(start, finish)
     options = get_details

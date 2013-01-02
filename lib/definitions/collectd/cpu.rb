@@ -7,7 +7,9 @@ cpu_metrics.each do |type|
   end
 end
 
-#graph "CPU" do
-#  metrics cpu_metrics.map {|m| "cpu_#{m}"}
-#  layout :stacked
-#end
+graph "cpu" do
+  metrics cpu_metrics.map {|m| "cpu_#{m}"}
+  layout :area
+  title "CPU $cpu_id"
+  scope "cpu_id"
+end

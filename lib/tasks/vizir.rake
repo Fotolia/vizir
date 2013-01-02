@@ -37,6 +37,7 @@ namespace :vizir do
       provider.load_entities
       provider.load_metrics
     end
+    Graph.load_defs
   end
 
   desc "Drop all entities and metrics"

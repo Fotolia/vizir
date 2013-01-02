@@ -1,21 +1,22 @@
 buildGraph = (data) ->
-  seriesdata = data
+  graph_data = data
+  metrics = graph_data["metrics"]
 
   $('#chart_container').remove()
   chart_container = $('<div id="chart_container"><div id="y_axis"></div><div id="chart"></div><div id="legend"></div></div>')
   $('#charts').append chart_container
 
   palette = new Rickshaw.Color.Palette(scheme: "colorwheel")
-  for i of seriesdata
-    seriesdata[i]["color"] = palette.color()
+  for i of metrics
+    metrics[i]["color"] = palette.color()
 
   graph = new Rickshaw.Graph(
     element: document.getElementById("chart")
     width: 1000
     height: 300
-    renderer: "line"
+    renderer: graph_data["layout"]
     #stroke: true
-    series: seriesdata
+    series: metrics
   )
 
   hoverDetail = new Rickshaw.Graph.HoverDetail(graph: graph)
@@ -40,11 +41,6 @@ buildGraph = (data) ->
 
 
 $(document).ready ->
-
-  $('a[data-remote="true"]').live 'ajax:success',
-    (e, data, textStatus, jqXHR) ->
-      jsonData = $.parseJSON data
-      buildGraph jsonData
-
-  #$.getJSON "http://localhost:3000/", (data) ->
-  #  buildGraph data
+  $('a[data-remote="true"]').on 'ajax:complete', (e, data) ->
+    jsonData = $.parseJSON data.responseText
+    buildGraph jsonData

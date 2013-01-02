@@ -1,6 +1,6 @@
 - content_for :sidebar do
-  - @is.each do |i|
-    %li= link_to("#{i.entity.name}##{i.title}", "/?i=#{i.id}", :remote => true)
+  - @gs.each do |g|
+    %li= link_to(g.title, "/?g=#{g.id}", :remote => true)
 
 %h1 App#home
 
