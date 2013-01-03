@@ -2,16 +2,16 @@ buildGraph = (data) ->
   graph_data = data
   metrics = graph_data["metrics"]
 
-  $('#chart_container').remove()
-  chart_container = $('<div id="chart_container"><div id="y_axis"></div><div id="chart"></div><div id="legend"></div></div>')
-  $('#charts').append chart_container
+  $('#graph_container').remove()
+  graph_container = $('<div id="graph_container"><div id="y_axis"></div><div id="graph"></div><div id="legend"></div></div>')
+  $('#graphs').append graph_container
 
   palette = new Rickshaw.Color.Palette(scheme: "colorwheel")
   for i of metrics
     metrics[i]["color"] = palette.color()
 
   graph = new Rickshaw.Graph(
-    element: document.getElementById("chart")
+    element: document.getElementById("graph")
     width: 1000
     height: 300
     renderer: graph_data["layout"]
@@ -41,6 +41,15 @@ buildGraph = (data) ->
 
 
 $(document).ready ->
-  $('a[data-remote="true"]').on 'ajax:complete', (e, data) ->
+  $('a[data-graph]').on 'ajax:complete', (e, data) ->
     jsonData = $.parseJSON data.responseText
     buildGraph jsonData
+
+#  if history and history.pushState
+#    $ ->
+#      $('a:[data-remote]:not([class~="no_history"]), .pagination a').live "click", (e) ->
+#        $.getScript @href
+#        history.pushState null, document.title, @href
+#        e.preventDefault()
+#      $(window).bind "popstate", ->
+#        $.getScript location.href
