@@ -1,6 +1,6 @@
 class Graph < ActiveRecord::Base
   attr_accessible :name
-  attr_accessor :title, :unit, :layout
+  attr_accessor :title, :unit, :layout, :scope
 
   validates :name,
     :presence => true
@@ -44,6 +44,14 @@ class Graph < ActiveRecord::Base
     end
   end
 
+  def title
+    case scope
+    when nil, :entity
+      @title
+    else
+      replace_vars(@title, instances.first.details)
+    end
+  end
   #def get_title
   #  title = name if title.nil?
   #  entities = instances.map {|i| i.entity.name}.uniq
@@ -68,9 +76,23 @@ class Graph < ActiveRecord::Base
     unless graph_def.empty?
       graph_def.first.each do |key, value|
         if self.respond_to?(key)
-          self.send("#{key}=", value)
+          val = value.is_a?(String) ? value.dup : value
+          self.send("#{key}=", val)
         end
       end
     end
+  end
+
+  private
+
+  # TODO factorize that with Instance
+  def replace_vars(string, vars)
+    var_names = string.scan(/\$(\S+)/).flatten
+    unless var_names.empty?
+      var_names.each do |var_name|
+        string.gsub!("$#{var_name}", vars[var_name])
+      end
+    end
+    string
   end
 end

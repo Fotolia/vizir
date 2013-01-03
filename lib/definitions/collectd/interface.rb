@@ -6,4 +6,11 @@
       title "Interface $iface #{dir} #{type}"
     end
   end
+
+  graph "if_#{type}" do
+    metrics [ "if_#{type}_tx", "if_#{type}_rx" ]
+    layout :line
+    title "Interface $iface #{type}"
+    scope "iface"
+  end
 end
