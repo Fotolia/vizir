@@ -15,7 +15,7 @@ class Graph < ActiveRecord::Base
     includes(:instances => :entity)
 
   def self.load_defs
-    Vizir::DSL[:graph].each do |graph_def|
+    Vizir::DSL.data[:graph].each do |graph_def|
       scope = graph_def[:scope]
       case scope
       when nil
@@ -71,7 +71,7 @@ class Graph < ActiveRecord::Base
   protected
 
   def dsl_override
-    graph_defs = Vizir::DSL[:graph]
+    graph_defs = Vizir::DSL.data[:graph]
     graph_def = graph_defs.select {|g| g[:name] == self.name}
     unless graph_def.empty?
       graph_def.first.each do |key, value|

@@ -1,5 +1,7 @@
 Vizir::Application.routes.draw do
   get "app/home"
+  get "app/reload_dsl"
+  get "app/dsl"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

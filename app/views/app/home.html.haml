@@ -1,6 +1,6 @@
 - content_for :sidebar do
   - @gs.each do |g|
-    %li= link_to(g.title, "/?g=#{g.id}", :remote => true)
+    %li= link_to g.title, "/?g=#{g.id}", :remote => true, :data => { :graph => true } 
 
 %h1 App#home
 

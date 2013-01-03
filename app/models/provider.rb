@@ -35,8 +35,4 @@ class Provider < ActiveRecord::Base
   def get_values(options = {})
     raise "Method not implemented"
   end
-
-  def load_definitions
-    raise "Method not implemented"
-  end
 end
