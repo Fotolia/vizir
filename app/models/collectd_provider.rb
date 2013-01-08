@@ -3,38 +3,17 @@ require 'rrd'
 class CollectdProvider < Provider
   attr_custom :rrd_path, :collectd_sock, :rrdcached_sock
 
-  def load_entities
-    @entities = Dir.glob("#{rrd_path}/*/").map {|e| e.split('/').last }.uniq
-    super
-  end
-
   def load_metrics
-    metric_list = []
-
-    # TODO make this block more generic, for use with other providers
+    @data = {}
     Dir.glob("#{rrd_path}/**/*.rrd").each do |filename|
       parts = filename.match(/#{rrd_path}\/(?<host>.*?)\/(?<rrd>.*)/)
       dss = get_ds_list(filename)
       dss.each do |ds|
-        metric = CollectdMetric.new(:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds)
-
-        instance = Instance.new
-        instance.assign_attributes({ :entity => Entity.find_by_name(parts[:host]), :provider => self }, :without_protection => true)
-        instance.details = metric.instance_details unless metric.instance_details.nil?
-
-        if metric_index = metric_list.index(metric)
-          metric = metric_list[metric_index]
-        else
-          metric_list << metric
-          metric.save!
-        end
-
-        instance.metric = metric
-        instance.save!
+        @data[parts[:host]] ||= []
+        @data[parts[:host]] << {:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds}
       end
     end
-
-    nil
+    super
   end
 
   def get_values(options = {})

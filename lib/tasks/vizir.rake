@@ -34,7 +34,6 @@ namespace :vizir do
       exit
     end
     Provider.all.each do |provider|
-      provider.load_entities
       provider.load_metrics
     end
     Graph.load_defs
@@ -43,6 +42,8 @@ namespace :vizir do
   desc "Drop all entities and metrics"
   task :cleanup => :environment do
     sql = <<-SQL
+    DELETE FROM graphs_instances;
+    DELETE FROM graphs;
     DELETE FROM instances;
     DELETE FROM metrics;
     DELETE FROM entities;

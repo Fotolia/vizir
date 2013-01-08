@@ -16,6 +16,8 @@ class Graph < ActiveRecord::Base
     includes(:instances => :entity)
 
   def self.load_defs
+    Graph.destroy_all
+    #ActiveRecord::Base.connection.reset_pk_sequence!(Graph.table_name)
     Vizir::DSL.data[:graph].each do |graph_def|
       scope = graph_def[:scope]
       case scope
@@ -60,13 +62,6 @@ class Graph < ActiveRecord::Base
       replace_vars(@title, instances.first.details)
     end
   end
-  #def get_title
-  #  title = name if title.nil?
-  #  entities = instances.map {|i| i.entity.name}.uniq
-  #  if entities.count == 1
-  #    title = "#{entities.first}##{name}"
-  #  end
-  #end
 
   def fetch_values(start, finish)
     {
