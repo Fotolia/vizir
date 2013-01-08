@@ -4,16 +4,16 @@ class CollectdProvider < Provider
   attr_custom :rrd_path, :collectd_sock, :rrdcached_sock
 
   def load_metrics
-    @data = {}
+    data = {}
     Dir.glob("#{rrd_path}/**/*.rrd").each do |filename|
       parts = filename.match(/#{rrd_path}\/(?<host>.*?)\/(?<rrd>.*)/)
       dss = get_ds_list(filename)
       dss.each do |ds|
-        @data[parts[:host]] ||= []
-        @data[parts[:host]] << {:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds}
+        data[parts[:host]] ||= []
+        data[parts[:host]] << {:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds}
       end
     end
-    super
+    super(data)
   end
 
   def get_values(options = {})

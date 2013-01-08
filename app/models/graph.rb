@@ -17,7 +17,7 @@ class Graph < ActiveRecord::Base
 
   def self.load_defs
     Graph.destroy_all
-    #ActiveRecord::Base.connection.reset_pk_sequence!(Graph.table_name)
+    Graph.reset_pk_sequence
     Vizir::DSL.data[:graph].each do |graph_def|
       scope = graph_def[:scope]
       case scope
