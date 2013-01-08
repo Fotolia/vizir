@@ -41,7 +41,8 @@ buildGraph = (data) ->
 
 
 $(document).ready ->
-  $('a[data-graph]').on 'ajax:complete', (e, data) ->
+
+  $('a[data-graph-id]').on 'ajax:complete', (e, data) ->
     jsonData = $.parseJSON data.responseText
     buildGraph jsonData
 

@@ -6,6 +6,7 @@ class Graph < ActiveRecord::Base
     :presence => true
 
   has_and_belongs_to_many :instances
+  has_many :entities, :through => :instances
 
   after_find do |graph|
     graph.dsl_override
@@ -42,11 +43,18 @@ class Graph < ActiveRecord::Base
         end
       end
     end
+    Instance.wo_graph.each do |instance|
+      graph = new(:name => instance.title)
+      graph.instances << instance
+      graph.save!
+    end
   end
 
   def title
     case scope
-    when nil, :entity
+    when nil
+      instances.first.title
+    when :entity
       @title
     else
       replace_vars(@title, instances.first.details)
@@ -87,12 +95,13 @@ class Graph < ActiveRecord::Base
 
   # TODO factorize that with Instance
   def replace_vars(string, vars)
-    var_names = string.scan(/\$(\S+)/).flatten
+    new_string = string.dup
+    var_names = new_string.scan(/\$(\S+)/).flatten
     unless var_names.empty?
       var_names.each do |var_name|
-        string.gsub!("$#{var_name}", vars[var_name])
+        new_string.gsub!("$#{var_name}", vars[var_name])
       end
     end
-    string
+    new_string
   end
 end

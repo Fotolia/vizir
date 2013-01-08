@@ -1,8 +1,15 @@
 - content_for :sidebar do
-  - @gs.each do |g|
-    %li= link_to g.title, "/?g=#{g.id}", :remote => true, :data => { :graph => true } 
+  .well.sidebar-nav
+    %ul.nav.nav-list
+      %li.nav-header Entities
+      - @entities.each do |e|
+        %li
+          = e.name
+          %ul
+            - e.graphs.uniq.each do |g|
+              %li= link_to g.title, "/?g=#{g.id}", :remote => true, :data => { :graph_id => g.id } 
 
-%h1 App#home
+/%h1 App#home
 
 #graphs
 

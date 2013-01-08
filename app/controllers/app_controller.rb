@@ -1,6 +1,6 @@
 class AppController < ApplicationController
   def home
-    @gs = Graph.w_entity
+    @entities = Entity.includes(:graphs => :instances)
 
     @metrics = []
 

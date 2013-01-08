@@ -7,4 +7,5 @@ class Entity < ActiveRecord::Base
 
   has_many :instances
   has_many :metrics, :through => :instances
+  has_many :graphs, :through => :instances
 end

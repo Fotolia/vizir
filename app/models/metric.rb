@@ -2,8 +2,7 @@ class Metric < ActiveRecord::Base
   extend StiHelpers
 
   attr_accessible :name, :type, :details
-  attr_custom :title, :unit
-  attr_accessor :instance_details
+  attr_accessor :title, :unit, :instance_details
 
   serialize :details, JSON
 

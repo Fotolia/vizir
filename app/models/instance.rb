@@ -14,6 +14,7 @@ class Instance < ActiveRecord::Base
 
   scope :incl_assocs, includes(:metric, :entity, :provider)
   scope :join_assocs, joins(:metric, :entity, :provider)
+  scope :wo_graph, includes(:graphs).where(:graphs => {:id => nil})
 
   def fetch_values(start, finish)
     options = get_details
@@ -33,7 +34,7 @@ class Instance < ActiveRecord::Base
 
   def title
     if metric.title
-      replace_vars(metric.title.dup, details)
+      replace_vars(metric.title, details)
     else
       metric.name
     end
@@ -41,13 +42,15 @@ class Instance < ActiveRecord::Base
 
   private
 
+  # TODO factorize that with Graph
   def replace_vars(string, vars)
-    var_names = string.scan(/\$(\S+)/).flatten
+    new_string = string.dup
+    var_names = new_string.scan(/\$(\S+)/).flatten
     unless var_names.empty?
       var_names.each do |var_name|
-        string.gsub!("$#{var_name}", vars[var_name])
+        new_string.gsub!("$#{var_name}", vars[var_name])
       end
     end
-    string
+    new_string
   end
 end
