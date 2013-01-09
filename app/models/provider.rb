@@ -11,7 +11,7 @@ class Provider < ActiveRecord::Base
   validates :type,
     :presence => true
 
-  has_many :instances
+  has_many :instances, :inverse_of => :provider
 
   def load_metrics(data)
     Instance.destroy_all
@@ -62,8 +62,8 @@ class Provider < ActiveRecord::Base
         instance.save!
       end
     end
-    existing_entities.each {|e| Entity.find_by_name(e.name).destroy}
-    existing_metrics.each {|m| Metric.find_by_name(m.name).destroy}
+    existing_entities.each {|e| Entity.find(e.id).destroy}
+    existing_metrics.each {|m| Metric.find(m.id).destroy}
   end
 
   def get_values(options = {})

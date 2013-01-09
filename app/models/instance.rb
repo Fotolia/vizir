@@ -6,11 +6,11 @@ class Instance < ActiveRecord::Base
   validates :entity_id, :provider_id, :metric_id,
     :presence => true
 
-  belongs_to :entity
-  belongs_to :metric
-  belongs_to :provider
+  belongs_to :entity, :inverse_of => :instances
+  belongs_to :metric, :inverse_of => :instances
+  belongs_to :provider, :inverse_of => :instances
 
-  has_and_belongs_to_many :graphs
+  has_and_belongs_to_many :graphs, :after_remove => :destroy_orphaned_graph
 
   scope :incl_assocs, includes(:metric, :entity, :provider)
   scope :join_assocs, joins(:metric, :entity, :provider)
@@ -52,5 +52,11 @@ class Instance < ActiveRecord::Base
       end
     end
     new_string
+  end
+
+  def destroy_orphaned_graph(graph)
+    if graph.instances.count == 0
+      graph.destroy
+    end
   end
 end

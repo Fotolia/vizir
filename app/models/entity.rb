@@ -5,7 +5,7 @@ class Entity < ActiveRecord::Base
     :uniqueness => true,
     :presence => true
 
-  has_many :instances
+  has_many :instances, :inverse_of => :entity
   has_many :metrics, :through => :instances
   has_many :graphs, :through => :instances
 end

@@ -17,7 +17,7 @@ class Metric < ActiveRecord::Base
   validates :type,
     :inclusion => {:in => ["CollectdMetric"]}
 
-  has_many :instances
+  has_many :instances, :inverse_of => :metric
   has_many :entities, :through => :instances
 
   after_initialize do |metric|
