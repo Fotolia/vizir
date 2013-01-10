@@ -16,54 +16,38 @@ class Provider < ActiveRecord::Base
   def load_metrics(data)
     Instance.destroy_all
     Instance.reset_pk_sequence
-    existing_entities = Entity.all
-    existing_metrics = Metric.all
+    new_entities = []
     new_metrics = []
 
     data.each do |entity_name, metrics|
       # first, entity
       # retrieve DB row if any, or create one
-      entities = existing_entities.select {|e| e.name == entity_name}
-      if entities.empty?
-        entity = Entity.create(:name => entity_name)
-      else
-        entity = existing_entities.delete(entities.first)
-      end
+      entity = Entity.find_or_create_by_name(entity_name)
 
       # then metrics and instances
       metrics.each do |metric_h|
-        metric = metric_type.new(metric_h)
+        m = metric_type.new(metric_h)
 
         instance = Instance.new
         instance.assign_attributes({:entity => entity, :provider => self }, :without_protection => true)
-        instance.details = metric.instance_details unless metric.instance_details.nil?
+        instance.details = m.instance_details unless m.instance_details.nil?
 
         # retrieve DB row if any, or create one
-        metrics = existing_metrics.select {|m| m.name == metric.name}
-        if metrics.empty?
-          metrics = new_metrics.select {|m| m.name == metric.name}
-          if metrics.empty?
-            new_metrics << metric
-            metric.save!
-          else
-            metric = metrics.first
-          end
+        if metric = metric_type.find_by_name(m.name)
+          metric.update_attributes!(:details => m.details)
         else
-          existing_metric = existing_metrics.delete(metrics.first)
-          existing_metric.update_attributes(metric.attributes.select {|a| [:id, :created_at, :updated_at].include?(a)})
-          if existing_metric.changed?
-            existing_metric.save!
-          end
-          metric = existing_metric
-          new_metrics << metric
+          metric = m
+          metric.save!
         end
+        new_metrics << metric.id
 
         instance.metric = metric
         instance.save!
       end
     end
-    existing_entities.each {|e| Entity.find(e.id).destroy}
-    existing_metrics.each {|m| Metric.find(m.id).destroy}
+
+    Entity.where("id NOT IN (?)", new_entities).destroy_all
+    Metric.where("id NOT IN (?)", new_metrics).destroy_all
   end
 
   def get_values(options = {})
