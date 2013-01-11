@@ -65,6 +65,7 @@ class Graph < ActiveRecord::Base
 
   def fetch_values(start, finish)
     {
+      "id" => id,
       "title" => title,
       "layout" => layout,
       "metrics" => instances.incl_assocs.map {|i| i.fetch_values(start, finish)}

@@ -13,23 +13,23 @@
  *= require_tree .
  */
 
-#chart_container {
+.graph_container {
   display: inline-block;
   font-family: Arial, Helvetica, sans-serif;
 }
-#chart {
+.graph {
   float: left;
 }
-#legend {
+.legend {
   float: left;
   margin-left: 15px;
 }
-#offset_form {
+.offset_form {
   float: left;
   margin: 2em 0 0 15px;
   font-size: 13px;
 }
-#y_axis {
+.y_axis {
   float: left;
   width: 40px;
 }

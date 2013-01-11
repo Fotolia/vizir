@@ -7,9 +7,16 @@
           = e.name
           %ul
             - e.graphs.uniq.each do |g|
-              %li= link_to g.title, "/?g=#{g.id}", :remote => true, :data => { :graph_id => g.id } 
-
-/%h1 App#home
+              %li= link_to g.title, "#", :data => { :graph_id => g.id } 
 
 #graphs
 
+- if @graph_ids
+  :javascript
+    $(document).ready(function() {
+      var ids = #{@graph_ids.to_json}
+      for (var id in ids) {
+        graphs.push(ids[id]);
+        fetchAndBuildGraphById(ids[id]);
+      }
+    });

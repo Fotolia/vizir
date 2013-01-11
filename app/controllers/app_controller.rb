@@ -5,8 +5,11 @@ class AppController < ApplicationController
     @metrics = []
 
     if params[:g]
-      g = Graph.find(params[:g])
-      @metrics = g.fetch_values(Time.now.to_i - 3600, Time.now.to_i)
+      @graph_ids = params[:g].split(",")
+      if request.xhr?
+        g = Graph.find(params[:g])
+        @metrics = g.fetch_values(Time.now.to_i - 3600, Time.now.to_i)
+      end
     end
 
     respond_to do |format|

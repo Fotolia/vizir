@@ -1,9 +1,14 @@
 buildGraph = (data) ->
-  graph_data = data
-  metrics = graph_data["metrics"]
+  metrics = data.metrics
 
-  $('#graph_container').remove()
-  graph_container = $('<div id="graph_container"><div id="y_axis"></div><div id="graph"></div><div id="legend"></div></div>')
+  return if document.getElementById("graph_container_#{data.id}")
+
+  graph_container = $("<div id=\"graph_container_#{data.id}\" class=\"graph_container\">
+    <h4>#{data.title}</h4>
+    <div id=\"y_axis_#{data.id}\" class=\"y_axis\"></div>
+    <div id=\"graph_#{data.id}\" class=\"graph\"></div>
+    <div id=\"legend_#{data.id}\" class=\"legend\"></div>
+  </div>")
   $('#graphs').append graph_container
 
   palette = new Rickshaw.Color.Palette(scheme: "colorwheel")
@@ -11,10 +16,10 @@ buildGraph = (data) ->
     metrics[i]["color"] = palette.color()
 
   graph = new Rickshaw.Graph(
-    element: document.getElementById("graph")
-    width: 1000
-    height: 300
-    renderer: graph_data["layout"]
+    element: document.getElementById("graph_#{data.id}")
+    width: 600
+    height: 150
+    renderer: data["layout"]
     #stroke: true
     series: metrics
   )
@@ -23,7 +28,7 @@ buildGraph = (data) ->
 
   legend = new Rickshaw.Graph.Legend(
     graph: graph
-    element: document.getElementById("legend")
+    element: document.getElementById("legend_#{data.id}")
   )
 
   #shelving = new Rickshaw.Graph.Behavior.Series.Toggle(
@@ -35,22 +40,37 @@ buildGraph = (data) ->
   y_axis = new Rickshaw.Graph.Axis.Y(
     graph: graph
     orientation: "left"
-    element: document.getElementById("y_axis")
+    element: document.getElementById("y_axis_#{data.id}")
   )
   graph.render()
 
+@fetchAndBuildGraphById = (id) ->
+  $.getJSON "/?g=#{id}", (data) ->
+    buildGraph data
+
+fetchAndBuildGraphByUrl = (href) ->
+  $.getJSON href, (data) ->
+    buildGraph data
+
+updateLocation = ->
+  query = if graphs.length > 0 then "?g=#{graphs.join(",")}" else ""
+  history.pushState null, document.title, "#{document.URL.split("?")[0]}#{query}"
+
+@graphs = new Array()
 
 $(document).ready ->
 
-  $('a[data-graph-id]').on 'ajax:complete', (e, data) ->
-    jsonData = $.parseJSON data.responseText
-    buildGraph jsonData
+  $('a[data-graph-id]').on 'click', (e) ->
+    graph_id = $(this).attr('data-graph-id')
+    e.preventDefault()
+    i = graphs.indexOf(graph_id)
+    if i == -1
+      graphs.push graph_id
+      fetchAndBuildGraphById graph_id
+    else
+      graphs.splice(i,1)
+      $("#graph_container_#{graph_id}").remove()
+    updateLocation graphs
 
-#  if history and history.pushState
-#    $ ->
-#      $('a:[data-remote]:not([class~="no_history"]), .pagination a').live "click", (e) ->
-#        $.getScript @href
-#        history.pushState null, document.title, @href
-#        e.preventDefault()
-#      $(window).bind "popstate", ->
-#        $.getScript location.href
+  $(window).bind "popstate", ->
+    fetchAndBuildGraphByUrl location.href
