@@ -4,7 +4,7 @@ buildGraph = (data) ->
   return if document.getElementById("graph_container_#{data.id}")
 
   graph_container = $("<div id=\"graph_container_#{data.id}\" class=\"graph_container\">
-    <h4>#{data.title}</h4>
+    <h4><a href=\"#\" class=\"remove\" data-rem-id=\"#{data.id}\"><i class=\"icon-remove-circle\"></i></a> #{data.title}</h4>
     <div id=\"y_axis_#{data.id}\" class=\"y_axis\"></div>
     <div id=\"graph_#{data.id}\" class=\"graph\"></div>
     <div id=\"legend_#{data.id}\" class=\"legend\"></div>
@@ -44,6 +44,14 @@ buildGraph = (data) ->
   )
   graph.render()
 
+  $('a.remove').on 'click', (e) ->
+    e.preventDefault()
+    graph_id = $(this).attr('data-rem-id')
+    i = graphs.indexOf(graph_id)
+    graphs.splice(i,1)
+    $("#graph_container_#{graph_id}").remove()
+    updateLocation graphs
+
 @fetchAndBuildGraphById = (id) ->
   $.getJSON "/?g=#{id}", (data) ->
     buildGraph data
@@ -59,7 +67,6 @@ updateLocation = ->
 @graphs = new Array()
 
 $(document).ready ->
-
   $('a[data-graph-id]').on 'click', (e) ->
     graph_id = $(this).attr('data-graph-id')
     e.preventDefault()
