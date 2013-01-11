@@ -36,10 +36,10 @@ class Metric < ActiveRecord::Base
       matches = {}
 
       if self.new_record?
-        unless self.details.nil? or @check_fields.nil?
+        unless self.details.nil? or self.class.attr_customs.nil?
           select_proc = Proc.new do |dsl|
             matched = true
-            @check_fields.each do |field|
+            self.class.attr_customs.each do |field|
               if dsl[field].is_a? Regexp
                 matched = false unless (dsl_match = dsl[field].match(self.send(field)))
                 matches.merge!(dsl_match.to_hash(field.to_s)) if dsl_match

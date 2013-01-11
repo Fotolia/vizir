@@ -13,6 +13,13 @@ module StiHelpers
       end
       # add attribute in attr_accessible
       attr_accessible name
+
+      @attr_customs ||= []
+      @attr_customs << name
     end
+  end
+
+  def attr_customs
+    @attr_customs
   end
 end
