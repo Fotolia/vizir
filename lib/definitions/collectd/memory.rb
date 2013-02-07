@@ -1,4 +1,4 @@
-mem_metrics = %w(free active inactive wired cache used buffered cached)
+mem_metrics = %w(active used inactive buffered wired cache cached free)
 mem_metrics.each do |type|
   metric "memory_#{type}" do
     rrd %r{memory/memory-#{type}.rrd}

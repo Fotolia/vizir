@@ -1,4 +1,4 @@
-cpu_metrics = [ "idle", "interrupt", "nice", "softirq", "steal", "system", "user", "wait" ]
+cpu_metrics = %w(system interrupt softirq wait steal user nice idle)
 cpu_metrics.each do |type|
   metric "cpu_#{type}" do
     rrd %r{cpu-(?<cpu_id>\d+)/cpu-#{type}.rrd}
