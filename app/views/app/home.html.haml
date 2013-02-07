@@ -11,8 +11,8 @@
               .accordion-body.collapse.in[e]
                 .accordion-inner
                   %ul
-                    - e.graphs.uniq.each do |g|
-                      %li= link_to g.title, "#", :data => { :graph_id => g.id } 
+                    - e.graphs.uniq.sort_by{|g| g.title}.each do |g|
+                      %li= link_to g.title, "#", :data => { :graph_id => g.id }
 
 #graphs
 

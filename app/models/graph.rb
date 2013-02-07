@@ -5,7 +5,8 @@ class Graph < ActiveRecord::Base
   validates :name,
     :presence => true
 
-  has_and_belongs_to_many :instances
+  has_many :graphs_instances
+  has_many :instances, :through => :graphs_instances, :order => "graphs_instances.sort"
   has_many :entities, :through => :instances
 
   after_find do |graph|
@@ -16,6 +17,7 @@ class Graph < ActiveRecord::Base
     includes(:instances => :entity)
 
   def self.load_defs
+    GraphsInstance.destroy_all
     Graph.destroy_all
     Graph.reset_pk_sequence
     Vizir::DSL.data[:graph].each do |graph_def|
@@ -25,9 +27,10 @@ class Graph < ActiveRecord::Base
         nil # noop for now
       when :entity
         Entity.all.each do |entity|
-          graph = new(:name => graph_def[:name])
-          graph.instances = Instance.join_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => graph_def[:metrics]})
-          graph.save!
+          graph = create(:name => graph_def[:name])
+          Instance.join_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => graph_def[:metrics]}).each do |instance|
+            graph.graphs_instances.create(:instance => instance, :sort => graph_def[:metrics].index(instance.metric.name))
+          end
         end
       else
         Entity.all.each do |entity|
@@ -38,9 +41,10 @@ class Graph < ActiveRecord::Base
           end
 
           instances.each do |key, instance_list|
-            graph = new(:name => graph_def[:name])
-            graph.instances = instance_list
-            graph.save!
+            graph = create(:name => graph_def[:name])
+            instance_list.each do |instance|
+              graph.graphs_instances.create(:instance => instance, :sort => graph_def[:metrics].index(instance.metric.name))
+            end
           end
         end
       end
@@ -64,9 +68,10 @@ class Graph < ActiveRecord::Base
   end
 
   def fetch_values(start, finish)
+    entity_name = entities.uniq.first.name
     {
       "id" => id,
-      "title" => title,
+      "title" => "#{entity_name}/#{title}",
       "layout" => layout,
       "metrics" => instances.incl_assocs.map {|i| i.fetch_values(start, finish)}
     }

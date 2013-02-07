@@ -1,6 +1,7 @@
 class AppController < ApplicationController
   def home
-    @entities = Entity.includes(:graphs => :instances)
+    # TODO right query to avoid duplicates
+    @entities = Entity.includes(:graphs => :instances).order("entities.name")
 
     @metrics = []
 
