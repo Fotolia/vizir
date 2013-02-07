@@ -5,8 +5,7 @@ Vizir is a web UI for displaying time series from different data sources.
 
 It is written in Ruby, using the Ruby on Rails framework.
 
-It is designed in a modular way, to be easily extended by writing providers for 
-multiple data sources.
+It is designed in a modular way, to be easily extended by writing providers for multiple data sources.
 
 Features
 --------
@@ -19,12 +18,8 @@ Features
 Setup
 -----
 
-  * Copy config/providers.yml.example to config/providers.yml and edit to match your environment
-  * rake vizir:init
-  * rake vizir:load
-
-Licencing
----------
-
-Vizir is distributed under the terms of MIT license.
-
+ * Copy config/database.yml.example to config/database.yml and edit to match your environment
+ * Copy config/providers.yml.example to config/providers.yml and edit to match your environment
+ * rake db:migrate
+ * rake vizir:init
+ * rake vizir:load
