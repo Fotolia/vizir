@@ -1,4 +1,4 @@
-Vizir (coming soon)
+Vizir
 ======
 
 Vizir is a web UI for displaying time series from different data sources.
@@ -6,6 +6,10 @@ Vizir is a web UI for displaying time series from different data sources.
 It is written in Ruby, using the Ruby on Rails framework.
 
 It is designed in a modular way, to be easily extended by writing providers for multiple data sources.
+
+collect is the only provider currently implemented, but more to come.
+
+It's still under development.
 
 Features
 --------
