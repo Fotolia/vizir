@@ -1,14 +1,14 @@
-[ "used", "free" ].each do |x|
-  metric "df_#{x}" do
-    rrd %r{df/df-(?<mount>\S+).rrd}
-    ds x
-    title "Disk space #{x} on $mount"
+[ "read", "write" ].each do |type|
+  metric "disk_octets_#{type}" do
+    rrd %r{disk-(?<disk>\w+)/disk_octets.rrd}
+    ds type
+    title "Disk $disk octets #{type}"
   end
 end
 
-graph "df" do
-  metrics [ "df_used", "df_free" ]
-  layout :area
-  title "Disk space on $mount"
-  scope "mount"
+graph "disk_octets" do
+  metrics [ "disk_octets_read", "disk_octets_write" ]
+  layout :line
+  title "Disk $disk I/O"
+  scope "disk"
 end
