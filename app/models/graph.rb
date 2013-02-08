@@ -1,5 +1,5 @@
 class Graph < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :unique_name
   attr_accessor :title, :unit, :layout, :scope
 
   validates :name,
@@ -17,19 +17,16 @@ class Graph < ActiveRecord::Base
     includes(:instances => :entity)
 
   def self.load_defs
-    GraphsInstance.destroy_all
-    Graph.destroy_all
-    Graph.reset_pk_sequence
     Vizir::DSL.data[:graph].each do |graph_def|
-      scope = graph_def[:scope]
+      name, scope = graph_def[:name], graph_def[:scope]
       case scope
       when nil
         nil # noop for now
       when :entity
         Entity.all.each do |entity|
-          graph = create(:name => graph_def[:name])
-          Instance.join_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => graph_def[:metrics]}).each do |instance|
-            graph.graphs_instances.create(:instance => instance, :sort => graph_def[:metrics].index(instance.metric.name))
+          graph = find_or_create_by_unique_name(:unique_name => "#{entity.name}|#{name}", :name => name)
+          Instance.incl_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => graph_def[:metrics]}).each do |instance|
+            graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => graph_def[:metrics].index(instance.metric.name))
           end
         end
       else
@@ -41,18 +38,17 @@ class Graph < ActiveRecord::Base
           end
 
           instances.each do |key, instance_list|
-            graph = create(:name => graph_def[:name])
+            graph = find_or_create_by_unique_name(:unique_name => "#{entity.name}|#{name}|#{key}", :name => name)
             instance_list.each do |instance|
-              graph.graphs_instances.create(:instance => instance, :sort => graph_def[:metrics].index(instance.metric.name))
+              graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => graph_def[:metrics].index(instance.metric.name))
             end
           end
         end
       end
     end
     Instance.wo_graph.each do |instance|
-      graph = new(:name => instance.title)
-      graph.instances << instance
-      graph.save!
+      graph = find_or_create_by_unique_name(:unique_name => instance.title, :name => instance.title)
+      graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => 0)
     end
   end
 

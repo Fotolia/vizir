@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207144953) do
+ActiveRecord::Schema.define(:version => 20130208150656) do
 
   create_table "entities", :force => true do |t|
     t.string   "name"
@@ -21,8 +21,9 @@ ActiveRecord::Schema.define(:version => 20130207144953) do
 
   create_table "graphs", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.string   "unique_name"
   end
 
   create_table "graphs_instances", :force => true do |t|
