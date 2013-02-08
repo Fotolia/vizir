@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  entity_id: 1
+  metric_id: 1
+  instance: MyString
+
+two:
+  entity_id: 1
+  metric_id: 1
+  instance: MyString
