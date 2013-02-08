@@ -17,7 +17,7 @@ class Metric < ActiveRecord::Base
   validates :type,
     :inclusion => {:in => ["CollectdMetric"]}
 
-  has_many :instances, :inverse_of => :metric
+  has_many :instances, :inverse_of => :metric, :dependent => :destroy
   has_many :entities, :through => :instances
 
   after_initialize do |metric|
@@ -56,7 +56,7 @@ class Metric < ActiveRecord::Base
 
       metric_def = metric_defs.select {|m| select_proc.call(m)}
       self.assign_attributes(metric_def.first, :without_protection => true) unless metric_def.empty?
-      self.instance_details = matches unless matches.empty?
+      self.instance_details = matches
     end
   end
 end

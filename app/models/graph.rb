@@ -5,7 +5,7 @@ class Graph < ActiveRecord::Base
   validates :name,
     :presence => true
 
-  has_many :graphs_instances
+  has_many :graphs_instances, :inverse_of => :graph, :dependent => :destroy
   has_many :instances, :through => :graphs_instances, :order => "graphs_instances.sort"
   has_many :entities, :through => :instances
 

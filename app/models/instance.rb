@@ -10,7 +10,7 @@ class Instance < ActiveRecord::Base
   belongs_to :metric, :inverse_of => :instances
   belongs_to :provider, :inverse_of => :instances
 
-  has_many :graphs_instances
+  has_many :graphs_instances, :inverse_of => :instance, :dependent => :destroy
   has_many :graphs, :through => :graphs_instances
 
   scope :incl_assocs, includes(:metric, :entity, :provider)
