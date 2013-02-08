@@ -1,7 +1,7 @@
 buildGraph = (data) ->
   metrics = data.metrics
 
-  return if document.getElementById("graph_container_#{data.id}")
+  return if $("#graph_container_#{data.id}").length > 0
 
   graph_container = $("<div id=\"graph_container_#{data.id}\" class=\"graph_container\">
     <h4><a href=\"#\" class=\"remove\" data-rem-id=\"#{data.id}\"><i class=\"icon-remove-circle\"></i></a> #{data.title}</h4>
@@ -16,7 +16,7 @@ buildGraph = (data) ->
     metrics[i]["color"] = palette.color()
 
   graph = new Rickshaw.Graph(
-    element: document.getElementById("graph_#{data.id}")
+    element: $("#graph_#{data.id}")[0]
     width: 600
     height: 150
     renderer: data["layout"]
@@ -28,7 +28,7 @@ buildGraph = (data) ->
 
   legend = new Rickshaw.Graph.Legend(
     graph: graph
-    element: document.getElementById("legend_#{data.id}")
+    element: $("#legend_#{data.id}")[0]
   )
 
   #shelving = new Rickshaw.Graph.Behavior.Series.Toggle(
@@ -40,44 +40,52 @@ buildGraph = (data) ->
   y_axis = new Rickshaw.Graph.Axis.Y(
     graph: graph
     orientation: "left"
-    element: document.getElementById("y_axis_#{data.id}")
+    element: $("#y_axis_#{data.id}")[0]
   )
   graph.render()
 
-  $('a.remove').on 'click', (e) ->
-    e.preventDefault()
-    graph_id = $(this).attr('data-rem-id')
-    i = graphs.indexOf(graph_id)
-    graphs.splice(i,1)
-    $("#graph_container_#{graph_id}").remove()
-    updateLocation graphs
+  graph_container.find('a.remove').on 'click', (e) ->
+    graph_id = $(this).data('rem-id')
+    removeGraphFromPage(graph_id)
+    return false
 
 @fetchAndBuildGraphById = (id) ->
-  $.getJSON "/?g=#{id}", (data) ->
+  $.getJSON "/graphs/#{id}.json", (data) ->
     buildGraph data
 
-fetchAndBuildGraphByUrl = (href) ->
-  $.getJSON href, (data) ->
-    buildGraph data
+updateLocation = (graphs) ->
+  hash = if graphs.length > 0 then "#" + graphs.join(",") else ""
+  history.replaceState null, document.title, document.URL.split('#')[0] + hash
 
-updateLocation = ->
-  query = if graphs.length > 0 then "?g=#{graphs.join(",")}" else ""
-  history.pushState null, document.title, "#{document.URL.split("?")[0]}#{query}"
+addGraphToPage = (id) ->
+  graphs.push(id)
+  fetchAndBuildGraphById(id)
+  updateLocation graphs
+
+removeGraphFromPage = (id) ->
+  i = graphs.indexOf(id)
+  graphs.splice(i,1)
+  $("#graph_container_#{id}").remove()
+  updateLocation graphs
+
+loadGraphsFromHash = ->
+  # If we have graphs from the URL, add them
+  return unless window.location.hash
+  ids = window.location.hash.substr(1).split(',')
+  for i, id of ids
+    return unless $.isNumeric(id)
+    addGraphToPage(id)
 
 @graphs = new Array()
 
-$(document).ready ->
+$ ->
   $('a[data-graph-id]').on 'click', (e) ->
     graph_id = $(this).attr('data-graph-id')
-    e.preventDefault()
     i = graphs.indexOf(graph_id)
     if i == -1
-      graphs.push graph_id
-      fetchAndBuildGraphById graph_id
+      addGraphToPage(graph_id)
     else
-      graphs.splice(i,1)
-      $("#graph_container_#{graph_id}").remove()
-    updateLocation graphs
+      removeGraphFromPage(graph_id)
+    return false
 
-  $(window).bind "popstate", ->
-    fetchAndBuildGraphByUrl location.href
+  loadGraphsFromHash()

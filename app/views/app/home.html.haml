@@ -16,13 +16,3 @@
 
 #graphs
 
-- if @graph_ids
-  :javascript
-    $(document).ready(function() {
-      $(".collapse").collapse('hide');
-      var ids = #{@graph_ids.to_json}
-      for (var id in ids) {
-        graphs.push(ids[id]);
-        fetchAndBuildGraphById(ids[id]);
-      }
-    });
