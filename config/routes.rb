@@ -3,6 +3,8 @@ Vizir::Application.routes.draw do
   get "app/reload_dsl"
   get "app/dsl"
 
+  resources :graphs, :only => [:show]
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
