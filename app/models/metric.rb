@@ -31,23 +31,22 @@ class Metric < ActiveRecord::Base
   protected
 
   def dsl_override
-    if metric_defs = Vizir::DSL.data[:metric][self.class.to_s]
+    if metric_defs = Vizir::DSL.metrics.select {|metric| metric[:type] == self.class.to_s}
       select_proc = nil
       matches = {}
 
       if self.new_record?
         unless self.details.nil? or self.class.attr_customs.nil?
           select_proc = Proc.new do |dsl|
-            matched = true
             self.class.attr_customs.each do |field|
               if dsl[field].is_a? Regexp
-                matched = false unless (dsl_match = dsl[field].match(self.send(field)))
+                return false unless (dsl_match = dsl[field].match(self.send(field)))
                 matches.merge!(dsl_match.to_hash(field.to_s)) if dsl_match
               else
-                matched = false unless (dsl[field] == self.send(field))
+                return false unless (dsl[field] == self.send(field))
               end
             end
-            matched
+            true
           end
         end
       else
