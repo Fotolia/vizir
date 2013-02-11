@@ -1,4 +1,4 @@
-cnx_types = %w( active reading waiting writing )
+cnx_types = %w( reading waiting writing )
 
 cnx_types.each do |type|
   metric "nginx_connections_#{type}" do

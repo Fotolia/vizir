@@ -1,11 +1,11 @@
 types = %w(used reserved free)
 
-types.each do |x|
+types.each do |type|
   # Simple DF
-  metric "df_#{x}" do
+  metric "df_#{type}" do
     rrd %r{df/df-(?<mount>\S+).rrd}
-    ds x
-    title "Disk space #{x} on $mount"
+    ds type
+    title "Disk space #{type} on $mount"
   end
 
   # Complex DF
