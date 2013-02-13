@@ -2,7 +2,7 @@ class Metric < ActiveRecord::Base
   extend StiHelpers
 
   attr_accessible :name, :type, :details
-  attr_accessor :title, :unit, :instance_details
+  attr_accessor :title, :unit, :instance_details, :defined
 
   serialize :details, JSON
 
@@ -31,6 +31,7 @@ class Metric < ActiveRecord::Base
   protected
 
   def dsl_override
+    self.defined = false
     if metric_defs = Vizir::DSL.metrics.select {|metric| metric[:type] == self.class.to_s}
       select_proc = nil
       matches = {}
@@ -54,7 +55,10 @@ class Metric < ActiveRecord::Base
       end
 
       metric_def = metric_defs.select {|m| select_proc.call(m)}
-      self.assign_attributes(metric_def.first, :without_protection => true) unless metric_def.empty?
+      unless metric_def.empty?
+        self.assign_attributes(metric_def.first, :without_protection => true)
+        self.defined = true
+      end
       self.instance_details = matches
     end
   end
