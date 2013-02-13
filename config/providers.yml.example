@@ -2,3 +2,4 @@
 MySupaCollectd:
   type: collectd
   rrd_path: /home/you/collectd/rrd
+  ignore_unknown_metrics: true
