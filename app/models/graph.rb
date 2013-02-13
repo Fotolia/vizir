@@ -17,22 +17,24 @@ class Graph < ActiveRecord::Base
     includes(:instances => :entity)
 
   def self.load_defs
-    Vizir::DSL.data[:graph].each do |graph_def|
+    Vizir::DSL.graphs.each do |graph_def|
       name, scope = graph_def[:name], graph_def[:scope]
+      metrics = graph_def[:metrics].keys
+
       case scope
       when nil
         nil # noop for now
       when :entity
         Entity.all.each do |entity|
           graph = find_or_create_by_unique_name(:unique_name => "#{entity.name}|#{name}", :name => name)
-          Instance.incl_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => graph_def[:metrics]}).each do |instance|
-            graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => graph_def[:metrics].index(instance.metric.name))
+          Instance.incl_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => metrics}).each do |instance|
+            graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => metrics.index(instance.metric.name))
           end
         end
       else
         Entity.all.each do |entity|
           instances = Hash.new
-          Instance.join_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => graph_def[:metrics]}).each do |instance|
+          Instance.join_assocs.where(:entities => {:id => entity.id}, :metrics => {:name => metrics}).each do |instance|
             instances[instance.details[scope]] ||= Array.new
             instances[instance.details[scope]] << instance
           end
@@ -40,7 +42,7 @@ class Graph < ActiveRecord::Base
           instances.each do |key, instance_list|
             graph = find_or_create_by_unique_name(:unique_name => "#{entity.name}|#{name}|#{key}", :name => name)
             instance_list.each do |instance|
-              graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => graph_def[:metrics].index(instance.metric.name))
+              graph.graphs_instances.find_or_create_by_instance_id(:instance_id => instance.id, :sort => metrics.index(instance.metric.name))
             end
           end
         end
@@ -76,7 +78,7 @@ class Graph < ActiveRecord::Base
   protected
 
   def dsl_override
-    graph_defs = Vizir::DSL.data[:graph]
+    graph_defs = Vizir::DSL.graphs
     graph_def = graph_defs.select {|g| g[:name] == self.name}
     unless graph_def.empty?
       graph_def.first.each do |key, value|
