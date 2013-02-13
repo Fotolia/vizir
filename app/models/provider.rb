@@ -13,7 +13,7 @@ class Provider < ActiveRecord::Base
 
   has_many :instances, :inverse_of => :provider
 
-  def load_metrics(data)
+  def load_metrics(data, ignore_unknown_metrics = false)
     new_entities = []
     new_metrics = []
 
@@ -30,6 +30,10 @@ class Provider < ActiveRecord::Base
         metric_found, instance_found = false, false
 
         m = metric_type.new(metric_h)
+
+        # skip creation if metric not defined in DSL and ignore_unknown_metrics option set on provider
+        next if !m.defined and ignore_unknown_metrics
+
         instance_details = m.details.merge(m.instance_details)
 
         # retrieve DB row if any, or create one

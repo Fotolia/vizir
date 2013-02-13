@@ -3,7 +3,7 @@ require 'rrd'
 class CollectdProvider < Provider
   attr_custom :rrd_path, :collectd_sock, :rrdcached_sock
 
-  def load_metrics
+  def load_metrics(ignore_unknown_metrics = false)
     data = {}
     Dir.glob("#{rrd_path}/**/*.rrd").each do |filename|
       parts = filename.match(/#{rrd_path}\/(?<host>.*?)\/(?<rrd>.*)/)
@@ -13,7 +13,7 @@ class CollectdProvider < Provider
         data[parts[:host]] << {:name => "#{parts[:rrd]}:#{ds}", :rrd => parts[:rrd], :ds => ds}
       end
     end
-    super(data)
+    super(data, ignore_unknown_metrics)
   end
 
   def get_values(options = {})
