@@ -37,7 +37,7 @@ class Metric < ActiveRecord::Base
 
       if self.new_record?
         unless self.details.nil? or self.class.attr_customs.nil?
-          select_proc = Proc.new do |dsl|
+          select_proc = lambda do |dsl|
             self.class.attr_customs.each do |field|
               if dsl[field].is_a? Regexp
                 return false unless (dsl_match = dsl[field].match(self.send(field)))
@@ -50,7 +50,7 @@ class Metric < ActiveRecord::Base
           end
         end
       else
-        select_proc = Proc.new {|dsl| dsl[:name] == self.name}
+        select_proc = lambda {|dsl| dsl[:name] == self.name}
       end
 
       metric_def = metric_defs.select {|m| select_proc.call(m)}

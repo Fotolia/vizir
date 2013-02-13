@@ -14,7 +14,7 @@ class AppController < ApplicationController
 
   def dsl
     respond_to do |format|
-      format.html { render :text => JSON.pretty_generate(Vizir::DSL.data), :content_type => "text/plain" }
+      format.html { render :text => JSON.pretty_generate(Vizir::DSL.objects), :content_type => "text/plain" }
     end
   end
 end
