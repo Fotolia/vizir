@@ -4,6 +4,11 @@ Vizir::Application.routes.draw do
   get "app/dsl"
 
   resources :graphs, :only => [:show]
+  resources :entities, :only => [] do
+    member do
+      get 'menu_metrics'
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -44,10 +44,16 @@ buildGraph = (data) ->
   )
   graph.render()
 
+  menuItemForGraph(data.id).addClass('active')
+
   graph_container.find('a.remove').on 'click', (e) ->
     graph_id = $(this).data('rem-id')
     removeGraphFromPage(graph_id)
     return false
+
+
+menuItemForGraph = (id) ->
+  $(".graphs-list").find("li > a[data-graph-id=#{id}]").parent('li')
 
 @fetchAndBuildGraphById = (id) ->
   $.getJSON "/graphs/#{id}.json", (data) ->
@@ -66,6 +72,7 @@ removeGraphFromPage = (id) ->
   i = graphs.indexOf(id)
   graphs.splice(i,1)
   $("#graph_container_#{id}").remove()
+  menuItemForGraph(id).removeClass('active')
   updateLocation graphs
 
 loadGraphsFromHash = ->
@@ -79,7 +86,30 @@ loadGraphsFromHash = ->
 @graphs = new Array()
 
 $ ->
-  $('a[data-graph-id]').on 'click', (e) ->
+  # Enable links in the graphs tree
+  # Entities
+  $('.graphs-list > li.entity').on 'click', (e) ->
+    entity = $(this)
+    metrics = entity.children('ul')
+    icon = entity.find('a > i')
+    if metrics.length == 0
+      # Fetch the metrics for this entity
+      icon.attr('class', 'icon-refresh icon-spin')
+      $.get("/entities/#{entity.data('entity-id')}/menu_metrics", (data) ->
+        entity.append(data)
+        # Call click again, to display it
+        entity.click()
+      )
+    else
+      if metrics.is(':hidden')
+        icon.attr('class', 'icon-chevron-down')
+        metrics.show()
+      else
+        metrics.hide()
+        icon.attr('class', 'icon-chevron-right')
+
+  # Graphs
+  $('.graphs-list').find('a[data-graph-id]').on 'click', (e) ->
     graph_id = $(this).attr('data-graph-id')
     i = graphs.indexOf(graph_id)
     if i == -1
@@ -88,4 +118,5 @@ $ ->
       removeGraphFromPage(graph_id)
     return false
 
+  # Load the graphs from URL
   loadGraphsFromHash()
