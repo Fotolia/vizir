@@ -1,23 +1,12 @@
-metric "load1" do
-  rrd "load/load.rrd"
-  ds "shortterm"
-  title "Load average 1min"
-end
-
-metric "load5" do
-  rrd "load/load.rrd"
-  ds "midterm"
-  title "Load average 5min"
-end
-
-metric "load15" do
-  rrd "load/load.rrd"
-  ds "longterm"
-  title "Load average 15min"
-end
-
 graph "load" do
-  metrics [ "load1", "load5", "load15" ]
+  { :shortterm => 1, :midterm => 5, :longterm => 15 }.each do |term,time|
+    metric "load_#{time.to_s}" do
+      rrd "load/load.rrd"
+      ds term.to_s
+      title "Load average #{time.to_s}min"
+    end
+  end
+
   layout :line
   title "Load average"
   scope :entity

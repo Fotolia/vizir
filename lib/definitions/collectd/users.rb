@@ -1,11 +1,10 @@
-metric "users_count" do
-  rrd %r{users/users.rrd}
-  ds "value"
-  title "User count"
-end
-
 graph "users" do
-  metrics [ "users_count" ]
+  metric "users_count" do
+    rrd %r{users/users.rrd}
+    ds "value"
+    title "User count"
+  end
+
   layout :line
   title "Users"
   scope :entity
