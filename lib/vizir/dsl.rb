@@ -115,7 +115,11 @@ module Vizir
     def run(file, type)
       @file = file
       @type = "#{type}_metric".camelcase
-      instance_eval(File.read(file), file)
+      begin
+        instance_eval(File.read(file), file)
+      rescue Exception => e
+        error("invalid definition file, skipping (#{e.message})")
+      end
     end
 
     def root
