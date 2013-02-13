@@ -83,22 +83,35 @@ loadGraphsFromHash = ->
     return unless $.isNumeric(id)
     addGraphToPage(id)
 
+enableGraphLinks = (e) ->
+  e.find('a[data-graph-id]').on 'click', (e) ->
+    graph_id = $(this).attr('data-graph-id')
+    i = graphs.indexOf(graph_id)
+    if i == -1
+      addGraphToPage(graph_id)
+    else
+      removeGraphFromPage(graph_id)
+    return false
+
+
 @graphs = new Array()
 
 $ ->
   # Enable links in the graphs tree
   # Entities
-  $('.graphs-list > li.entity').on 'click', (e) ->
-    entity = $(this)
-    metrics = entity.children('ul')
-    icon = entity.find('a > i')
+  $('.graphs-list > li.entity > a').on 'click', (e) ->
+    link = $(this)
+    entity = link.parent('li.entity')
+    metrics = link.siblings('ul')
+    icon = link.children('i')
     if metrics.length == 0
       # Fetch the metrics for this entity
       icon.attr('class', 'icon-refresh icon-spin')
       $.get("/entities/#{entity.data('entity-id')}/menu_metrics", (data) ->
-        entity.append(data)
+        n = entity.append(data)
+        enableGraphLinks(n)
         # Call click again, to display it
-        entity.click()
+        link.click()
       )
     else
       if metrics.is(':hidden')
@@ -107,16 +120,6 @@ $ ->
       else
         metrics.hide()
         icon.attr('class', 'icon-chevron-right')
-
-  # Graphs
-  $('.graphs-list').find('a[data-graph-id]').on 'click', (e) ->
-    graph_id = $(this).attr('data-graph-id')
-    i = graphs.indexOf(graph_id)
-    if i == -1
-      addGraphToPage(graph_id)
-    else
-      removeGraphFromPage(graph_id)
-    return false
 
   # Load the graphs from URL
   loadGraphsFromHash()
