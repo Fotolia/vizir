@@ -23,7 +23,7 @@ module Vizir
         end
         if block
           # create object definition in the root hash
-          @root.create_object(method, args.first, block)
+          @root.create_object(self, method, args.first, block)
           # create a reference on the former in the local hash
           send(method, args.first) unless root?
         else
@@ -100,11 +100,11 @@ module Vizir
       end
     end
 
-    def create_object(type, name, block)
+    def create_object(parent, type, name, block)
       @objects[type] ||= Array.new
       @refs[type] ||= Array.new
       # create a "sub-"context to evaluate nested directives
-      context = DSL.new(self)
+      context = DSL.new(parent)
       context.instance_eval &block
       object = {:name => name}
       object[:type] = @type if type == :metric
