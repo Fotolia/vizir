@@ -83,17 +83,6 @@ loadGraphsFromHash = ->
     return unless $.isNumeric(id)
     addGraphToPage(id)
 
-enableGraphLinks = (e) ->
-  e.find('a[data-graph-id]').on 'click', (e) ->
-    graph_id = $(this).attr('data-graph-id')
-    i = graphs.indexOf(graph_id)
-    if i == -1
-      addGraphToPage(graph_id)
-    else
-      removeGraphFromPage(graph_id)
-    return false
-
-
 @graphs = new Array()
 
 $ ->
@@ -109,7 +98,21 @@ $ ->
       icon.attr('class', 'icon-refresh icon-spin')
       $.get("/entities/#{entity.data('entity-id')}/menu_metrics", (data) ->
         n = entity.append(data)
-        enableGraphLinks(n)
+        n.find('a[data-graph-id]').each (i,e) ->
+          # Show/Hide graph on click
+          $(e).on('click', ->
+            graph_id = $(this).data('graph-id').toString()
+            if graphs.indexOf(graph_id) == -1
+              addGraphToPage(graph_id)
+            else
+              removeGraphFromPage(graph_id)
+            return false
+          )
+
+          # Mark as active if the graph is open
+          if graphs.indexOf($(e).data('graph-id').toString()) != -1
+            $(e).parent('li').addClass('active')
+
         # Call click again, to display it
         link.click()
       )
