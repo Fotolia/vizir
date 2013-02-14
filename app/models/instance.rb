@@ -24,6 +24,7 @@ class Instance < ActiveRecord::Base
     options["end"] = finish
 
     data = {
+      "id" => id,
       "name" => title,
       "data" => provider.get_values(options)
     }
