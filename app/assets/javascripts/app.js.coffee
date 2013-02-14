@@ -103,10 +103,16 @@ buildGraph = (data) ->
           break
     )
 
+  menuItemForGraph(data.id).addClass('active')
+
   graph_container.find('a.remove').on 'click', (e) ->
     graph_id = $(this).data('rem-id')
     removeGraphFromPage(graph_id)
     return false
+
+
+menuItemForGraph = (id) ->
+  $(".graphs-list").find("li > a[data-graph-id=#{id}]").parent('li')
 
 @fetchAndBuildGraphById = (id) ->
   $.getJSON "/graphs/#{id}.json", (data) ->
@@ -125,6 +131,7 @@ removeGraphFromPage = (id) ->
   i = graphs.indexOf(id)
   graphs.splice(i,1)
   $("#graph_container_#{id}").remove()
+  menuItemForGraph(id).removeClass('active')
   updateLocation graphs
 
 loadGraphsFromHash = ->
@@ -138,13 +145,43 @@ loadGraphsFromHash = ->
 @graphs = new Array()
 
 $ ->
-  $('a[data-graph-id]').on 'click', (e) ->
-    graph_id = $(this).attr('data-graph-id')
-    i = graphs.indexOf(graph_id)
-    if i == -1
-      addGraphToPage(graph_id)
-    else
-      removeGraphFromPage(graph_id)
-    return false
+  # Enable links in the graphs tree
+  # Entities
+  $('.graphs-list > li.entity > a').on 'click', (e) ->
+    link = $(this)
+    entity = link.parent('li.entity')
+    metrics = link.siblings('ul')
+    icon = link.children('i')
+    if metrics.length == 0
+      # Fetch the metrics for this entity
+      icon.attr('class', 'icon-refresh icon-spin')
+      $.get("/entities/#{entity.data('entity-id')}/menu_metrics", (data) ->
+        n = entity.append(data)
+        n.find('a[data-graph-id]').each (i,e) ->
+          # Show/Hide graph on click
+          $(e).on('click', ->
+            graph_id = $(this).data('graph-id').toString()
+            if graphs.indexOf(graph_id) == -1
+              addGraphToPage(graph_id)
+            else
+              removeGraphFromPage(graph_id)
+            return false
+          )
 
+          # Mark as active if the graph is open
+          if graphs.indexOf($(e).data('graph-id').toString()) != -1
+            $(e).parent('li').addClass('active')
+
+        # Call click again, to display it
+        link.click()
+      )
+    else
+      if metrics.is(':hidden')
+        icon.attr('class', 'icon-chevron-down')
+        metrics.show()
+      else
+        metrics.hide()
+        icon.attr('class', 'icon-chevron-right')
+
+  # Load the graphs from URL
   loadGraphsFromHash()

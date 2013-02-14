@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.9'
+gem 'rails', '3.2.12'
 gem 'jquery-rails'
-gem 'haml', '>= 3.1.7'
+gem 'haml', '>= 4.0'
 
 group :production do
   gem 'thin', '>= 1.5.0'
@@ -10,7 +10,7 @@ group :production do
 end
 
 group :development do
-  gem 'haml-rails', '>= 0.3.5'
+#  gem 'haml-rails'
   gem 'quiet_assets', '>= 1.0.1'
   gem 'sqlite3'
   gem 'better_errors'

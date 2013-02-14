@@ -1,18 +1,12 @@
 - content_for :sidebar do
   .well.sidebar-nav
-    %ul.nav.nav-list
+    %ul.nav.nav-list.graphs-list
       %li.nav-header
         Graphs
-        #menu.accordion
-          - @entities.each do |e|
-            .accordion-group
-              .accordion-heading
-                = link_to e.name, "#entity_#{e.id}", :class => "accordion-toggle", :data => {:toggle => "collapse", :parent => "#menu"}
-              .accordion-body.collapse.in[e]
-                .accordion-inner
-                  %ul
-                    - e.graphs.uniq.sort_by{|g| g.title}.each do |g|
-                      %li= link_to g.title, "#", :data => { :graph_id => g.id }
-
+      - @entities.each do |e|
+        %li.entity{ :data => { 'entity-id' => e.id } }
+          = link_to "#entity_#{e.id}", :class => "accordion-toggle", :data => {:toggle => "collapse", :parent => "#menu"} do
+            %i.icon-chevron-right
+            = e.name
 #graphs
 
