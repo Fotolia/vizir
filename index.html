@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Vizir by Fotolia</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Vizir</h1>
+        <p class="header">Web UI to display graphs from various sources</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/Fotolia/vizir/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/Fotolia/vizir/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/Fotolia/vizir">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/Fotolia">Fotolia</a></p>
+
+
+      </header>
+      <section>
+        <h1>Vizir</h1>
+
+<p>Vizir is a web UI for displaying time series from different data sources.</p>
+
+<p>It is written in Ruby, using the Ruby on Rails framework.</p>
+
+<p>It is designed in a modular way, to be easily extended by writing providers for multiple data sources.</p>
+
+<p>collect is the only provider currently implemented, but more to come.</p>
+
+<p>It's still under development.</p>
+
+<h2>Features</h2>
+
+<ul>
+<li>renders graphs in the browser</li>
+<li>supports your own time series source with a few lines of code</li>
+<li>provides a DSL to describe metrics and graphs, to create custom dashboards,
+and to apply operations to data (sums, ratios, etc.)</li>
+</ul><h2>Setup</h2>
+
+<ul>
+<li>Copy config/database.yml.example to config/database.yml and edit to match your environment</li>
+<li>Copy config/providers.yml.example to config/providers.yml and edit to match your environment</li>
+<li>rake db:migrate</li>
+<li>rake vizir:init</li>
+<li>rake vizir:load</li>
+</ul>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
