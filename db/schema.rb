@@ -11,19 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130208150656) do
+ActiveRecord::Schema.define(:version => 20130214100620) do
 
   create_table "entities", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string "name"
   end
 
   create_table "graphs", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.string   "unique_name"
+    t.string "name"
+    t.string "unique_name"
   end
 
   create_table "graphs_instances", :force => true do |t|
@@ -33,28 +29,22 @@ ActiveRecord::Schema.define(:version => 20130208150656) do
   end
 
   create_table "instances", :force => true do |t|
-    t.integer  "entity_id"
-    t.integer  "metric_id"
-    t.integer  "provider_id"
-    t.text     "details"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer "entity_id"
+    t.integer "metric_id"
+    t.integer "provider_id"
+    t.text    "details"
   end
 
   create_table "metrics", :force => true do |t|
-    t.string   "name"
-    t.string   "type"
-    t.text     "details"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string "name"
+    t.string "type"
+    t.text   "details"
   end
 
   create_table "providers", :force => true do |t|
-    t.string   "name"
-    t.string   "type"
-    t.text     "details"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string "name"
+    t.string "type"
+    t.text   "details"
   end
 
 end
