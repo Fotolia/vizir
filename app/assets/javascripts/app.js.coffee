@@ -55,7 +55,7 @@ buildGraph = (data) ->
     .append('<th class="avg">Average</th>')
   legend.append header
   body = $('<tbody>')
-  for metric in metrics.reverse()
+  for metric in metrics.slice().reverse()
     row = $('<tr>').addClass('line_' + metric.id).data('metric-id', metric.id)
     swatch = $('<div>')
     swatch.css('backgroundColor', metric.color)
@@ -92,13 +92,24 @@ buildGraph = (data) ->
 
   for serie in graph.series
     line = legend.find('tr.line_'+serie.id)
-    s = serie
     line.on('click', (e) ->
+      # Dont allow to disable all series
+      return if !$(this).hasClass('disabled') && graph.series.active().length == 1
+
       $(this).toggleClass('disabled')
       m_id = $(this).data('metric-id')
       for s in graph.series
         if s.id == m_id
           s.disabled = ! s.disabled
+          unless s.disabled
+            # Reorder the series
+            newSeries = []
+            series = body.children('tr').each (i,tr) ->
+              newSeries.unshift $.grep(graph.series.active(), (s) -> s.id == $(tr).data('metric-id'))[0]
+
+            for i,s in newSeries
+              graph.series[i] = s
+
           graph.render()
           break
     )
