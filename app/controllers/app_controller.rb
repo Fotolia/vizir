@@ -1,7 +1,6 @@
 class AppController < ApplicationController
   def home
-    # TODO right query to avoid duplicates
-    @entities = Entity.includes(:graphs => :instances).order("entities.name")
+    @entities = Entity.order("entities.name")
   end
 
   def reload_dsl
