@@ -20,7 +20,7 @@ class CollectdProvider < Provider
     rrd_rel_path = "#{options["entity"]}/#{options["rrd"]}"
     rrd_abs_path = "#{rrd_path}/#{rrd_rel_path}"
 
-    flush(rrd_rel_path, collectd_sock) if collectd_sock
+    flush("\"#{rrd_rel_path}\"", collectd_sock) if collectd_sock
     flush(rrd_abs_path, rrdcached_sock) if rrdcached_sock
 
     rrd = RRD::Base.new(rrd_abs_path)
@@ -54,7 +54,7 @@ class CollectdProvider < Provider
 
   def flush(path, socket)
     socket = UNIXSocket.new(socket)
-    socket.puts "FLUSH \"#{path}\""
+    socket.puts "FLUSH #{path}"
     socket.gets
     socket.close
   end
