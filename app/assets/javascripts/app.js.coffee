@@ -45,14 +45,29 @@ buildGraph = (data) ->
   )
   graph.render()
 
+  # The line to show the legend
+  showLegend = $('<div class="show-legend"></i> Show Legend</div>').hide()
+  showLegendIcon = $('<i class="icon-chevron-right">')
+  showLegend.prepend(showLegendIcon)
+  graph_container.append(showLegend)
+  showLegend.on 'click', ->
+    console.log('toto')
+    $(this).hide()
+    $(this).siblings('table.legend').show()
+
   # Build the legend
   legend = $('<table>').addClass('legend table table-condensed table-hover table-striped')
   header = $('<thead>')
-    .append('<th class="swatch"></th>')
+    .append('<th class="swatch"><i class="icon-chevron-down"></th>')
     .append('<th class="name">Metric</th>')
     .append('<th class="min">Minimum</th>')
     .append('<th class="max">Maximum</th>')
     .append('<th class="avg">Average</th>')
+    .on 'click', ->
+      t = $(this).parent('table')
+      t.hide()
+      t.siblings('.show-legend').show()
+
   legend.append header
   body = $('<tbody>')
   for metric in metrics.slice().reverse()
