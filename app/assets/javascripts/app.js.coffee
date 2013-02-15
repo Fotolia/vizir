@@ -8,7 +8,7 @@ prettyNumber = (n) ->
   else
     return n.toFixed(2)
 
-buildGraph = (data) ->
+@buildGraph = (data) ->
   metrics = data.metrics
 
   return if $("#graph_container_#{data.id}").length > 0
