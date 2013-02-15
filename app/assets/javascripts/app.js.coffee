@@ -45,18 +45,20 @@ buildGraph = (data) ->
   )
   graph.render()
 
+  legendContainer = $('<div class="legend-container">')
+
   # The line to show the legend
   showLegend = $('<div class="show-legend"></i> Show Legend</div>').hide()
   showLegendIcon = $('<i class="icon-chevron-right">')
   showLegend.prepend(showLegendIcon)
-  graph_container.append(showLegend)
+  legendContainer.append(showLegend)
   showLegend.on 'click', ->
     console.log('toto')
     $(this).hide()
-    $(this).siblings('table.legend').show()
+    $(this).siblings('table').show()
 
   # Build the legend
-  legend = $('<table>').addClass('legend table table-condensed table-hover table-striped')
+  legend = $('<table>').addClass('table table-condensed table-hover table-striped')
   header = $('<thead>')
     .append('<th class="swatch"><i class="icon-chevron-down"></th>')
     .append('<th class="name">Metric</th>')
@@ -103,7 +105,9 @@ buildGraph = (data) ->
     body.append(row)
 
   legend.append(body)
-  graph_container.append(legend)
+  legendContainer.append(legend)
+
+  graph_container.append(legendContainer)
 
   for serie in graph.series
     line = legend.find('tr.line_'+serie.id)

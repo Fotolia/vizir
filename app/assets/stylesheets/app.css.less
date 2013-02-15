@@ -5,41 +5,48 @@
 .graph_container {
 	.y_axis {
 		width: 70px;
-		padding-bottom: 10px;
 	}
-	.show-legend {
-		font-size: 11px;
-		margin-left: 85px;
-		font-weight: bold;
-		margin-top: 166px;
+	.x_tick {
+		.title {
+			bottom: -20px;
+		}
 	}
-	table.legend {
-		width: 600px;
-		table-layout: fixed;
-		font-size: 11px;
-		tr {
-			cursor: pointer;
-			&.disabled {
-				color: #ccc;
+	.legend-container {
+		padding-top: 5px;
+		clear: both;
+		margin-left: 70px;
+		.show-legend {
+			font-size: 11px;
+			font-weight: bold;
+		}
+		table {
+			width: 600px;
+			table-layout: fixed;
+			font-size: 11px;
+			tr {
+				cursor: pointer;
+				&.disabled {
+					color: #ccc;
+				}
 			}
-		}
-		td, th {
-			padding: 1px;
-		}
-		th {
-			text-align: left;
-		}
-		.swatch {
-			width: 12px;
-			vertical-align: bottom;
-			div {
-				width: 10px;
-				height: 10px;
-				margin-bottom: 6px;
+			td, th {
+				padding: 1px;
 			}
-		}
-		.min, .max, .avg {
-			width: 70px;
+			th {
+				text-align: left;
+			}
+			.swatch {
+				width: 12px;
+				vertical-align: bottom;
+				div {
+					width: 10px;
+					height: 10px;
+					margin-bottom: 6px;
+				}
+			}
+			.min, .max, .avg {
+				width: 70px;
+			}
 		}
 	}
 }
