@@ -17,8 +17,8 @@
     .container-fluid
       .row-fluid
         .span3
-          = yield :sidebar
-        .span9
+          = render "partials/sidebar"
+        #content.span9
           = yield
       .row-fluid
         .span2.offset5

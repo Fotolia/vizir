@@ -4,9 +4,11 @@ Vizir::Application.routes.draw do
   get "app/dsl"
 
   resources :graphs, :only => [:show]
+  resources :dashboards
   resources :entities, :only => [] do
     member do
-      get 'menu_metrics'
+      get 'graphs'
+      get 'dashboards'
     end
   end
 
