@@ -20,8 +20,20 @@ generateGraph = (container, data) ->
   metrics = data.metrics
 
   #return if $("#graph_container_#{data.id}").length > 0
+  navBar = $('<div>').addClass('navbar').append(
+    $('<div>').addClass('navbar-inner')
+      .append($('<a>').addClass('brand').attr('href', '/graphs/'+data.id).text(data.title))
+      .append($('<ul>').addClass('nav pull-right')
+        .append($('<li>').addClass('divider-vertical'))
+        .append($('<li>').addClass('active').append($('<a>').text('1h')))
+        .append($('<li>').append($('<a>').text('1d')))
+        .append($('<li>').append($('<a>').text('1w')))
+        .append($('<li>').append($('<a>').text('1m')))
+        .append($('<li>').append($('<a>').text('1y')))
+    )
+  )
 
-  container.append($('<h4>').append(" #{data.title}"))
+  container.append(navBar)
     .append($('<div>').attr('id', "y_axis_#{data.id}").addClass('y_axis'))
     .append($('<div>').attr('id', "graph_#{data.id}").addClass('graph'))
 
