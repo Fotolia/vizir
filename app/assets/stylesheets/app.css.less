@@ -3,21 +3,43 @@
 // You can use Less here: http://lesscss.org/
 
 .graph_container {
+	width: 800px;
 	.y_axis {
 		width: 70px;
 	}
 	.x_tick {
 		.title {
 			bottom: -20px;
+			font-size: 11px;
 		}
 	}
 	.legend-container {
+		font-size: 11px;
 		padding-top: 5px;
 		clear: both;
 		margin-left: 70px;
-		.show-legend {
-			font-size: 11px;
-			font-weight: bold;
+		.mini-legend {
+			border-top: 1px solid #ddd;
+			cursor: pointer;
+			i {
+				margin-right: 5px;
+			}
+			.item {
+				white-space: nowrap;
+				display: inline-block;
+				position: relative;
+				margin-right: 8px;
+				.swatch {
+					position: absolute;
+					top: 30%;
+					float: left;
+					width: 8px;
+					height: 8px;
+				}
+				.text {
+					padding-left: 12px;
+				}
+			}
 		}
 		table {
 			width: 600px;
@@ -34,6 +56,7 @@
 			}
 			th {
 				text-align: left;
+				cursor: pointer;
 			}
 			.swatch {
 				width: 12px;

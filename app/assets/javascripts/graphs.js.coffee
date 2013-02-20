@@ -31,7 +31,7 @@ generateGraph = (container, data) ->
 
   graph = new Rickshaw.Graph(
     element: $("#graph_#{data.id}")[0]
-    width: 600
+    width: 700
     height: 150
     renderer: data["layout"]
     #stroke: true
@@ -52,16 +52,16 @@ generateGraph = (container, data) ->
   legendContainer = $('<div class="legend-container">')
 
   # The line to show the legend
-  showLegend = $('<div class="show-legend"></i> Show Legend</div>').hide()
-  showLegendIcon = $('<i class="icon-chevron-right">')
-  showLegend.prepend(showLegendIcon)
-  legendContainer.append(showLegend)
-  showLegend.on 'click', ->
+  miniLegend = $('<div class="mini-legend"></div>')
+  miniLegendIcon = $('<i class="icon-chevron-right pull-left">')
+  miniLegend.prepend(miniLegendIcon)
+  legendContainer.append(miniLegend)
+  miniLegend.on 'click', ->
     $(this).hide()
-    $(this).siblings('table').show()
+    $(this).parent().children('table').show()
 
   # Build the legend
-  legend = $('<table>').addClass('table table-condensed table-hover table-striped')
+  legend = $('<table>').addClass('table table-condensed table-hover table-striped').hide()
   header = $('<thead>')
     .append('<th class="swatch"><i class="icon-chevron-down"></th>')
     .append('<th class="name">Metric</th>')
@@ -71,11 +71,18 @@ generateGraph = (container, data) ->
     .on 'click', ->
       t = $(this).parent('table')
       t.hide()
-      t.siblings('.show-legend').show()
+      t.siblings('.mini-legend').show()
 
   legend.append header
   body = $('<tbody>')
   for metric in metrics.slice().reverse()
+    # Build the mini legend
+    mini = $('<div>').addClass('item')
+    miniSwatch = $('<span>').addClass('swatch').css('backgroundColor', metric.color)
+    mini.append(miniSwatch)
+    mini.append($('<span>').addClass('text').text(metric.name))
+    miniLegend.append(mini)
+    # Build the regular legend
     row = $('<tr>').addClass('line_' + metric.id).data('metric-id', metric.id)
     swatch = $('<div>')
     swatch.css('backgroundColor', metric.color)
