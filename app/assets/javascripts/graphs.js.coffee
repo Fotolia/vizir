@@ -56,9 +56,9 @@ generateGraph = (container, data) ->
   miniLegendIcon = $('<i class="icon-chevron-right pull-left">')
   miniLegend.prepend(miniLegendIcon)
   legendContainer.append(miniLegend)
-  miniLegend.on 'click', ->
-    $(this).hide()
-    $(this).parent().children('table').show()
+  miniLegendIcon.on 'click', ->
+    $(this).parent().hide()
+    $(this).parent().siblings('table').show()
 
   # Build the legend
   legend = $('<table>').addClass('table table-condensed table-hover table-striped').hide()
@@ -77,13 +77,13 @@ generateGraph = (container, data) ->
   body = $('<tbody>')
   for metric in metrics.slice().reverse()
     # Build the mini legend
-    mini = $('<div>').addClass('item')
+    mini = $('<div>').addClass('item legend-' + metric.id).data('metric-id', metric.id)
     miniSwatch = $('<span>').addClass('swatch').css('backgroundColor', metric.color)
     mini.append(miniSwatch)
     mini.append($('<span>').addClass('text').text(metric.name))
     miniLegend.append(mini)
     # Build the regular legend
-    row = $('<tr>').addClass('line_' + metric.id).data('metric-id', metric.id)
+    row = $('<tr>').addClass('line legend-' + metric.id).data('metric-id', metric.id)
     swatch = $('<div>')
     swatch.css('backgroundColor', metric.color)
     swatch_cell = $('<td>').addClass('swatch').append(swatch)
@@ -119,28 +119,30 @@ generateGraph = (container, data) ->
   container.append(legendContainer)
 
   for serie in graph.series
-    line = legend.find('tr.line_'+serie.id)
-    line.on('click', (e) ->
-      # Dont allow to disable all series
-      return if !$(this).hasClass('disabled') && graph.series.active().length == 1
+    line = legend.find('tr.legend-'+serie.id)
+    mini = miniLegend.find('.legend-'+serie.id)
+    for e in [mini, line]
+      do (e) -> e.on('click', ->
+        # Dont allow to disable all series
+        return if !$(this).hasClass('disabled') && graph.series.active().length == 1
 
-      $(this).toggleClass('disabled')
-      m_id = $(this).data('metric-id')
-      for s in graph.series
-        if s.id == m_id
-          s.disabled = ! s.disabled
-          unless s.disabled
-            # Reorder the series
-            newSeries = []
-            series = body.children('tr').each (i,tr) ->
-              newSeries.unshift $.grep(graph.series.active(), (s) -> s.id == $(tr).data('metric-id'))[0]
+        m_id = $(this).data('metric-id')
+        $(this).parents('.legend-container').find('.legend-' + m_id).toggleClass('disabled')
+        for s in graph.series
+          if s.id == m_id
+            s.disabled = ! s.disabled
+            unless s.disabled
+              # Reorder the series
+              newSeries = []
+              series = body.children('tr').each (i,tr) ->
+               newSeries.unshift $.grep(graph.series.active(), (s) -> s.id == $(tr).data('metric-id'))[0]
 
-            for i,s in newSeries
-              graph.series[i] = s
+              for i,s in newSeries
+                graph.series[i] = s
 
-          graph.render()
-          break
-    )
+            graph.render()
+            break
+      )
 
   container.find('a.remove').on 'click', (e) ->
     graph_id = $(this).data('rem-id')
