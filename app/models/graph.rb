@@ -8,6 +8,7 @@ class Graph < ActiveRecord::Base
   has_many :graphs_instances, :inverse_of => :graph, :dependent => :destroy
   has_many :instances, :through => :graphs_instances, :order => "graphs_instances.sort"
   has_many :entities, :through => :instances
+  has_and_belongs_to_many :dashboards, :uniq => true
 
   after_find do |graph|
     graph.dsl_override

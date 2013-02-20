@@ -1,0 +1,3 @@
+%ul.nav.nav-list.dashboards
+  - @dashboards.each do |d|
+    %li.dashboard= link_to d.title, dashboard_path(d), :data => { :dashboard_id => d.id }

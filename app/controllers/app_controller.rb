@@ -1,6 +1,5 @@
 class AppController < ApplicationController
   def home
-    @entities = Entity.order("entities.name")
   end
 
   def reload_dsl

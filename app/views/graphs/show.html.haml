@@ -1,14 +1,1 @@
-#graphs
-
-:javascript
-  $(document).ready(function() {
-    buildGraph(#{@graph.to_json})
-  });
-/.graph_container{:id => "graph_container_#{@graph["id"]}" }
-/  %h4
-/    %a{:href => "#", :data => { :rem_id => @graph["id"] }}
-/      %i.icon-remove-circle
-/      = @graph["title"]
-/  .y_axis{:id => "y_axis_#{@graph["id"]}"}
-/  .graph{:id => "graph_#{@graph["id"]}"}
-/  .legend{:id => "legend_#{@graph["id"]}"}
+.graph_container{:id => "graph_container_#{@graph.id}", :data => {:graph_id => @graph.id}}
