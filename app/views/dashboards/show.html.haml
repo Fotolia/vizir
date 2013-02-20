@@ -1,0 +1,3 @@
+.dashboard[@dashboard]
+  - @dashboard.graph_ids.each do |gid|
+    .graph_container{:id => "graph_container_#{gid}", :data => {:graph_id => gid}}

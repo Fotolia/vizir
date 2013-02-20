@@ -1,13 +1,15 @@
-graph "swap" do
-  %w(used free).each do |type|
-    metric "swap_#{type}" do
-      rrd %r{swap/swap-#{type}.rrd}
-      ds "value"
-      title "Swap #{type.capitalize}"
+dashboard "system" do
+  graph "swap" do
+    %w(used free).each do |type|
+      metric "swap_#{type}" do
+        rrd %r{swap/swap-#{type}.rrd}
+          ds "value"
+        title "Swap #{type.capitalize}"
+      end
     end
-  end
 
-  layout :area
-  title "Swap Usage"
-  scope :entity
+    layout :area
+    title "Swap Usage"
+    scope :entity
+  end
 end

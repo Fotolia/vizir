@@ -21,12 +21,20 @@ class GraphsController < ApplicationController
       end
     end
 
-    g = Graph.find(params[:id].to_i)
-    @graph = g.fetch_values(w_start, w_end)
+    @graph = Graph.find(params[:id].to_i)
 
-    respond_to do |format|
-      format.json { render :json => @graph }
-      format.html { render "show", :layout => "minimal" }
+    if request.xhr?
+      respond_to do |format|
+        format.html { render :layout => false }
+        format.json do
+          graph_data = @graph.fetch_values(w_start, w_end)
+          render :json => graph_data
+        end
+      end
+    else
+      if params.has_key?(:mini)
+        render :layout => "minimal"
+      end
     end
   end
 end

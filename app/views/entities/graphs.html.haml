@@ -1,0 +1,3 @@
+%ul.nav.nav-list.metrics
+  - @graphs.each do |g|
+    %li= link_to g.title, graph_path(g), :data => { :graph_id => g.id }
