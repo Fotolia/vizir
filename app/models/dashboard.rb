@@ -21,8 +21,11 @@ class Dashboard < ActiveRecord::Base
       when nil
         Entity.includes(:graphs).each do |entity|
           dashboard = where(:name => name, :entity_id => entity.id).first_or_initialize
-          dashboard.graphs = entity.graphs.uniq.select{|graph| graph_list.include?(graph.name)}
-          dashboard.save!
+          graphs = entity.graphs.uniq.select{|graph| graph_list.include?(graph.name)}
+          if graphs.count > 0
+            dashboard.graphs = graphs
+            dashboard.save!
+          end
         end
       end
     end

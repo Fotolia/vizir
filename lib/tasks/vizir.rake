@@ -45,17 +45,4 @@ namespace :vizir do
     Graph.load_defs
     Dashboard.load_defs
   end
-
-  desc "Drop all entities and metrics"
-  task :cleanup => :environment do
-    sql = <<-SQL
-    DELETE FROM graphs_instances;
-    DELETE FROM graphs;
-    DELETE FROM instances;
-    DELETE FROM metrics;
-    DELETE FROM entities;
-    SQL
-    ActiveRecord::Base.establish_connection
-    ActiveRecord::Base.connection.execute(sql)
-  end
 end

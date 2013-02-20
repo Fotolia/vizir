@@ -1,6 +1,5 @@
 class DashboardsController < ApplicationController
   def index
-    init_sidebar
   end
 
   def create
