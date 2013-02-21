@@ -52,8 +52,8 @@ generateGraph = (container, data) ->
 
   hoverDetail = new Rickshaw.Graph.HoverDetail(graph: graph)
 
-  x_axis = new Rickshaw.Graph.Axis.Time(graph: graph)
-  y_axis = new Rickshaw.Graph.Axis.Y(
+  xAxis = new Rickshaw.Graph.Axis.Time(graph: graph)
+  yAxis = new Rickshaw.Graph.Axis.Y(
     graph: graph
     orientation: "left",
     tickFormat: Rickshaw.Fixtures.Number.formatKMBT
@@ -98,8 +98,8 @@ generateGraph = (container, data) ->
     row = $('<tr>').addClass('line legend-' + metric.id).data('metric-id', metric.id)
     swatch = $('<div>')
     swatch.css('backgroundColor', metric.color)
-    swatch_cell = $('<td>').addClass('swatch').append(swatch)
-    name_cell = $('<td>').addClass('name').text(metric.name)
+    swatchCell = $('<td>').addClass('swatch').append(swatch)
+    nameCell = $('<td>').addClass('name').text(metric.name)
 
     # Calculate our values for the serie
     min = max = metric.data[0].y
@@ -115,15 +115,15 @@ generateGraph = (container, data) ->
     max = prettyNumber(max)
     avg = prettyNumber(avg)
 
-    min_cell = $('<td>').addClass('min').text(min)
-    max_cell = $('<td>').addClass('max').text(max)
-    avg_cell = $('<td>').addClass('avg').text(avg)
+    minCell = $('<td>').addClass('min').text(min)
+    maxCell = $('<td>').addClass('max').text(max)
+    avgCell = $('<td>').addClass('avg').text(avg)
     row
-      .append(swatch_cell)
-      .append(name_cell)
-      .append(min_cell)
-      .append(max_cell)
-      .append(avg_cell)
+      .append(swatchCell)
+      .append(nameCell)
+      .append(minCell)
+      .append(maxCell)
+      .append(avgCell)
     body.append(row)
 
   legend.append(body)
@@ -138,10 +138,10 @@ generateGraph = (container, data) ->
         # Dont allow to disable all series
         return if !$(this).hasClass('disabled') && graph.series.active().length == 1
 
-        m_id = $(this).data('metric-id')
+        mId = $(this).data('metric-id')
         $(this).parents('.legend-container').find('.legend-' + m_id).toggleClass('disabled')
         for s in graph.series
-          if s.id == m_id
+          if s.id == mId
             s.disabled = ! s.disabled
             unless s.disabled
               # Reorder the series
@@ -157,6 +157,6 @@ generateGraph = (container, data) ->
       )
 
   container.find('a.remove').on 'click', (e) ->
-    graph_id = $(this).data('rem-id')
-    removeGraphFromPage(graph_id)
+    graphId = $(this).data('rem-id')
+    removeGraphFromPage(graphId)
     return false
