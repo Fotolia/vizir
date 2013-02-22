@@ -23,7 +23,7 @@ class Provider < ActiveRecord::Base
       entity = Entity.find_or_create_by_name(entity_name)
       new_entities << entity.id
 
-      instances = Hash[Instance.includes(:metric).where(:entity_id => entity.id).map {|i| [i.metric.id, i]}]
+      instances = Instance.where(:entity_id => entity.id).inject({}){|h,i| (h[i.metric_id] ||= []) << i.unique_name; h}
 
       # then metrics and instances
       metrics.each do |metric_h|
@@ -37,9 +37,8 @@ class Provider < ActiveRecord::Base
         # retrieve DB row if any, or create one
         if metric = metric_type.find_by_name(m.name)
           metric_found = true
-          if instances.has_key?(metric.id)
+          if instances.has_key?(metric.id) and instances[metric.id].include?(m.instance_details.values.sort.join("|"))
             instance_found = true
-            instances[metric.id].update_attributes!(:details => m.instance_details)
           end
         end
 
@@ -48,7 +47,7 @@ class Provider < ActiveRecord::Base
             metric = m
             metric.save!
           end
-          Instance.create(:entity_id => entity.id, :metric_id => metric.id, :provider_id => self.id, :details => m.instance_details)
+          Instance.create(:entity_id => entity.id, :metric_id => metric.id, :provider_id => self.id, :details => m.details.merge(m.instance_details))
         end
         new_metrics << metric.id
       end

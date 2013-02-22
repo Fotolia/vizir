@@ -1,5 +1,6 @@
 class Instance < ActiveRecord::Base
   attr_accessible :entity_id, :metric_id, :provider_id, :details
+  attr_reader :unique_name
 
   serialize :details, JSON
 
@@ -40,6 +41,10 @@ class Instance < ActiveRecord::Base
     else
       metric.name
     end
+  end
+
+  def unique_name
+    details.values.sort.join("|")
   end
 
   private
