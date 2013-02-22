@@ -139,7 +139,7 @@ generateGraph = (container, data) ->
         return if !$(this).hasClass('disabled') && graph.series.active().length == 1
 
         mId = $(this).data('metric-id')
-        $(this).parents('.legend-container').find('.legend-' + m_id).toggleClass('disabled')
+        $(this).parents('.legend-container').find('.legend-' + mId).toggleClass('disabled')
         for s in graph.series
           if s.id == mId
             s.disabled = ! s.disabled
