@@ -34,15 +34,12 @@ class Provider < ActiveRecord::Base
         # skip creation if metric not defined in DSL and ignore_unknown_metrics option set on provider
         next if !m.defined and ignore_unknown_metrics
 
-        instance_details = m.details.merge(m.instance_details)
-
         # retrieve DB row if any, or create one
         if metric = metric_type.find_by_name(m.name)
           metric_found = true
-          metric.update_attributes!(:details => m.details)
           if instances.has_key?(metric.id)
             instance_found = true
-            instances[metric.id].update_attributes!(:details => instance_details)
+            instances[metric.id].update_attributes!(:details => m.instance_details)
           end
         end
 
@@ -51,7 +48,7 @@ class Provider < ActiveRecord::Base
             metric = m
             metric.save!
           end
-          Instance.create(:entity_id => entity.id, :metric_id => metric.id, :provider_id => self.id, :details => instance_details)
+          Instance.create(:entity_id => entity.id, :metric_id => metric.id, :provider_id => self.id, :details => m.instance_details)
         end
         new_metrics << metric.id
       end

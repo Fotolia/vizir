@@ -1,16 +1,11 @@
 class Metric < ActiveRecord::Base
   extend StiHelpers
 
-  attr_accessible :name, :type, :details
-  attr_accessor :title, :unit, :instance_details, :defined
-
-  serialize :details, JSON
+  attr_accessible :name, :type
+  attr_accessor :title, :unit, :instance_details, :defined, :details
 
   validates :name,
     :uniqueness => true,
-    :presence => true
-
-  validates :details,
     :presence => true
 
   # TODO: use descendants/subclasses
@@ -37,7 +32,7 @@ class Metric < ActiveRecord::Base
       matches = {}
 
       if self.new_record?
-        unless self.details.nil? or self.class.attr_customs.nil?
+        unless self.class.attr_customs.nil?
           select_proc = lambda do |dsl|
             self.class.attr_customs.each do |field|
               if dsl[field].is_a? Regexp
@@ -45,6 +40,7 @@ class Metric < ActiveRecord::Base
                 matches.merge!(dsl_match.to_hash(field.to_s)) if dsl_match
               else
                 return false unless (dsl[field] == self.send(field))
+                matches[field.to_s] = self.send(field)
               end
             end
             true
