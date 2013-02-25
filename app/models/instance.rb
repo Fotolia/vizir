@@ -19,7 +19,7 @@ class Instance < ActiveRecord::Base
   scope :wo_graph, includes(:graphs).where(:graphs => {:id => nil})
 
   def fetch_values(start, finish)
-    options = get_details
+    options = details.clone
     options["entity"] = entity.name
     options["start"] = start
     options["end"] = finish
@@ -27,12 +27,10 @@ class Instance < ActiveRecord::Base
     data = {
       "id" => id,
       "name" => title,
+      "unit" => metric.unit,
+      "data_type" => metric.data_type,
       "data" => provider.get_values(options)
     }
-  end
-
-  def get_details
-    details.nil? ? metric.details : metric.details.merge(details)
   end
 
   def title

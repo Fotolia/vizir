@@ -19,8 +19,13 @@ class Metric < ActiveRecord::Base
     metric.dsl_override
   end
 
-  def ==(metric)
-    self.name == metric.name
+  def data_type
+    case unit
+    when :value, :percent
+      unit
+    else
+      :si
+    end
   end
 
   protected
