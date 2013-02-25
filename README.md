@@ -43,7 +43,7 @@ To create a new one, juste delete it and restart the application.
 
 ## Metrics, graphs and dashboards definition
 
-Vizir provides a comprehensive DSL to define metrics, graphs and dashboards (each one being a set of one or more of the previous).
+Vizir provides a comprehensive Ruby DSL to define metrics, graphs and dashboards (each one being a set of one or more of the previous).
 
 It comes with a set of definitions, stored in `lib/definitions/<provider>`, the only provider being "collectd" at the moment.
 
@@ -68,6 +68,7 @@ will define 3 metrics (load_1, load_5, load_15), gathered in a graph.
 The `scope :entity` line means the graph is defined for each entity (e.g host) which provides load data.
 
 Graphs can be grouped in dashboards to simplify the display.
+Currently, graphs must be part of a dashboard to be displayed.
 
 Definition of a "System" dashboard :
 
