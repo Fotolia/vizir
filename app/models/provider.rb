@@ -2,6 +2,7 @@ class Provider < ActiveRecord::Base
   extend StiHelpers
 
   attr_accessible :name, :type, :details
+  attr_custom :ignore_unknown_metrics
 
   serialize :details, JSON
 
