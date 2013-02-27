@@ -1,4 +1,4 @@
-# Vizir
+# Vizir [![Build Status](https://travis-ci.org/Fotolia/vizir.png?branch=master)](https://travis-ci.org/Fotolia/vizir)
 
 Vizir is a web UI for displaying time series from different data sources.
 
