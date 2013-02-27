@@ -4,7 +4,7 @@ dashboard "openvpn" do
       metric "openvpn_network_#{type}" do
         rrd %r{openvpn-(?<file>[a-zA-Z0-9.\-]+)/if_octets-(?<user>[a-zA-Z0-9.\-]+).rrd}
         ds type
-        title "iOpenVPN trafic #{type.upcase} for $user"
+        title "OpenVPN trafic #{type.upcase} for $user"
       end
     end
 
